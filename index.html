@@ -1,0 +1,4523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduTrack — Student Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════
+     CSS VARIABLES & RESET
+  ═══════════════════════════════════════════ */
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --bg4: #1f2d45;
+    --surface: #162032;
+    --surface2: #1e2f47;
+    --border: rgba(99,179,237,0.12);
+    --border2: rgba(99,179,237,0.22);
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --accent3: #93c5fd;
+    --gold: #f59e0b;
+    --gold2: #fbbf24;
+    --emerald: #10b981;
+    --emerald2: #34d399;
+    --rose: #f43f5e;
+    --rose2: #fb7185;
+    --violet: #8b5cf6;
+    --violet2: #a78bfa;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --radius: 12px;
+    --radius2: 18px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --shadow2: 0 8px 40px rgba(0,0,0,0.5);
+    --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+    --sidebar-w: 240px;
+    --font-display: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  [data-theme="light"] {
+    --bg: #f0f4ff;
+    --bg2: #ffffff;
+    --bg3: #f8fafc;
+    --bg4: #eef2ff;
+    --surface: #ffffff;
+    --surface2: #f1f5ff;
+    --border: rgba(59,130,246,0.14);
+    --border2: rgba(59,130,246,0.28);
+    --accent: #2563eb;
+    --accent2: #3b82f6;
+    --accent3: #60a5fa;
+    --gold: #d97706;
+    --gold2: #f59e0b;
+    --emerald: #059669;
+    --emerald2: #10b981;
+    --rose: #e11d48;
+    --rose2: #f43f5e;
+    --violet: #7c3aed;
+    --violet2: #8b5cf6;
+    --text: #0f172a;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --shadow: 0 4px 24px rgba(59,130,246,0.08);
+    --shadow2: 0 8px 40px rgba(59,130,246,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+    transition: background var(--transition), color var(--transition);
+  }
+
+  /* ═══════════════════════════════════════════
+     SCROLLBAR
+  ═══════════════════════════════════════════ */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ═══════════════════════════════════════════
+     SIDEBAR
+  ═══════════════════════════════════════════ */
+  #sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 200;
+    transition: transform var(--transition), background var(--transition);
+    overflow: hidden;
+  }
+
+  .sidebar-logo {
+    padding: 28px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--violet));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo-icon svg { width: 20px; height: 20px; fill: white; }
+
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .logo-text span { color: var(--accent2); }
+
+  .sidebar-subtitle {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    padding-left: 48px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 12px 8px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition), transform var(--transition);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text2);
+    position: relative;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+
+  .nav-item:hover {
+    background: var(--surface);
+    color: var(--text);
+    transform: translateX(2px);
+  }
+
+  .nav-item.active {
+    background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.1));
+    color: var(--accent2);
+    font-weight: 500;
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.75; }
+  .nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    min-width: 20px;
+    text-align: center;
+    transition: background var(--transition);
+  }
+
+  .sidebar-footer {
+    padding: 16px 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: background var(--transition);
+  }
+
+  .theme-toggle:hover { background: var(--surface2); }
+
+  .toggle-label {
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toggle-switch {
+    width: 36px; height: 20px;
+    background: var(--border2);
+    border-radius: 20px;
+    position: relative;
+    transition: background var(--transition);
+  }
+
+  .toggle-switch::after {
+    content: '';
+    width: 14px; height: 14px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px; left: 3px;
+    transition: transform var(--transition);
+  }
+
+  [data-theme="light"] .toggle-switch { background: var(--accent); }
+  [data-theme="light"] .toggle-switch::after { transform: translateX(16px); }
+
+  /* ═══════════════════════════════════════════
+     MAIN CONTENT
+  ═══════════════════════════════════════════ */
+  #main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    transition: background var(--transition);
+  }
+
+  /* ═══════════════════════════════════════════
+     TOP BAR
+  ═══════════════════════════════════════════ */
+  #topbar {
+    height: 64px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background var(--transition);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  #hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text2);
+    padding: 6px;
+    border-radius: 8px;
+    transition: background var(--transition);
+  }
+
+  #hamburger:hover { background: var(--surface); }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 380px;
+    margin: 0 24px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    width: 16px; height: 16px;
+    pointer-events: none;
+  }
+
+  #globalSearch {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px 8px 36px;
+    font-size: 14px;
+    color: var(--text);
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+
+  #globalSearch::placeholder { color: var(--text3); }
+  #globalSearch:focus { border-color: var(--accent); background: var(--surface2); }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text2);
+    transition: background var(--transition), color var(--transition), transform var(--transition);
+  }
+
+  .icon-btn:hover { background: var(--surface2); color: var(--text); transform: translateY(-1px); }
+
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  /* ═══════════════════════════════════════════
+     PAGES
+  ═══════════════════════════════════════════ */
+  .page { display: none; padding: 28px; animation: fadeIn 0.3s ease; }
+  .page.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ═══════════════════════════════════════════
+     DASHBOARD
+  ═══════════════════════════════════════════ */
+  .dash-hero {
+    background: linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(139,92,246,0.08) 100%);
+    border: 1px solid rgba(59,130,246,0.18);
+    border-radius: var(--radius2);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dash-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(139,92,246,0.15), transparent);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .dash-hero-title {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+  }
+
+  .dash-hero-sub { font-size: 14px; color: var(--text2); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 22px 22px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color var(--transition), transform var(--transition), background var(--transition);
+    cursor: default;
+  }
+
+  .stat-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 0 var(--radius2) 0 80px;
+    opacity: 0.08;
+  }
+
+  .stat-card.blue::after { background: var(--accent); }
+  .stat-card.gold::after { background: var(--gold); }
+  .stat-card.emerald::after { background: var(--emerald); }
+  .stat-card.rose::after { background: var(--rose); }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 12px;
+    transition: color 0.3s ease;
+  }
+
+  .stat-card.blue .stat-value { color: var(--accent2); }
+  .stat-card.gold .stat-value { color: var(--gold2); }
+  .stat-card.emerald .stat-value { color: var(--emerald2); }
+  .stat-card.rose .stat-value { color: var(--rose2); }
+
+  .stat-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .stat-card.blue .stat-bar-fill { background: var(--accent); }
+  .stat-card.gold .stat-bar-fill { background: var(--gold); }
+  .stat-card.emerald .stat-bar-fill { background: var(--emerald); }
+  .stat-card.rose .stat-bar-fill { background: var(--rose); }
+
+  .dash-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .dash-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 22px;
+    transition: background var(--transition);
+  }
+
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--text);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-heading::before {
+    content: '';
+    width: 3px; height: 14px;
+    background: var(--accent);
+    border-radius: 3px;
+    display: block;
+  }
+
+  /* Attendance chart */
+  .att-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 100px;
+    margin-bottom: 8px;
+  }
+
+  .att-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+  }
+
+  .att-bar-outer {
+    flex: 1;
+    width: 100%;
+    background: var(--border);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .att-bar-inner {
+    width: 100%;
+    background: linear-gradient(to top, var(--emerald), var(--emerald2));
+    border-radius: 4px;
+    transition: height 0.8s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .att-bar-label { font-size: 10px; color: var(--text3); }
+
+  /* Recent activity */
+  .activity-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .activity-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--bg3);
+    border-radius: var(--radius);
+    font-size: 13px;
+    border: 1px solid var(--border);
+    transition: background var(--transition);
+  }
+
+  .activity-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .activity-text { flex: 1; color: var(--text2); }
+  .activity-time { font-size: 11px; color: var(--text3); }
+
+  /* Quick actions */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .quick-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 20px 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transition: all var(--transition);
+    font-family: var(--font-body);
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .quick-btn:hover { background: var(--surface2); border-color: var(--accent); transform: translateY(-3px); color: var(--text); }
+
+  .quick-btn-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quick-btn-icon svg { width: 20px; height: 20px; }
+
+  /* ═══════════════════════════════════════════
+     STUDENT TABLE PAGE
+  ═══════════════════════════════════════════ */
+  .table-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .filter-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text);
+    font-family: var(--font-body);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+  }
+
+  .filter-select:focus { border-color: var(--accent); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-body);
+    transition: all var(--transition);
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+
+  .btn-danger { background: rgba(244,63,94,0.12); color: var(--rose2); border: 1px solid rgba(244,63,94,0.2); }
+  .btn-danger:hover { background: rgba(244,63,94,0.2); }
+
+  .btn-success { background: rgba(16,185,129,0.12); color: var(--emerald2); border: 1px solid rgba(16,185,129,0.2); }
+  .btn-success:hover { background: rgba(16,185,129,0.2); }
+
+  .btn-gold { background: rgba(245,158,11,0.12); color: var(--gold2); border: 1px solid rgba(245,158,11,0.2); }
+  .btn-gold:hover { background: rgba(245,158,11,0.2); }
+
+  .btn svg { width: 15px; height: 15px; }
+
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+  .ml-auto { margin-left: auto; }
+
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead { background: var(--bg3); }
+
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color var(--transition);
+  }
+
+  th:hover { color: var(--text2); }
+
+  th.sorted { color: var(--accent2); }
+
+  th .sort-icon { display: inline-block; margin-left: 4px; opacity: 0.5; font-size: 10px; }
+  th.sorted .sort-icon { opacity: 1; }
+
+  td {
+    padding: 13px 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+    transition: background var(--transition);
+  }
+
+  tr:hover td { background: var(--surface2); }
+
+  .student-photo {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border2);
+    background: var(--bg3);
+    display: block;
+  }
+
+  .avatar-initials {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: var(--font-display);
+    border: 2px solid transparent;
+    flex-shrink: 0;
+  }
+
+  .student-info { display: flex; align-items: center; gap: 12px; }
+  .student-name { font-weight: 500; color: var(--text); }
+  .student-roll { font-size: 12px; color: var(--text3); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  .badge-blue { background: rgba(59,130,246,0.12); color: var(--accent2); }
+  .badge-violet { background: rgba(139,92,246,0.12); color: var(--violet2); }
+  .badge-emerald { background: rgba(16,185,129,0.12); color: var(--emerald2); }
+  .badge-rose { background: rgba(244,63,94,0.12); color: var(--rose2); }
+  .badge-gold { background: rgba(245,158,11,0.12); color: var(--gold2); }
+
+  .att-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .att-switch {
+    width: 40px; height: 22px;
+    border-radius: 22px;
+    background: var(--rose);
+    position: relative;
+    transition: background var(--transition);
+    flex-shrink: 0;
+    cursor: pointer;
+    border: none;
+  }
+
+  .att-switch.present { background: var(--emerald); }
+
+  .att-switch::after {
+    content: '';
+    width: 16px; height: 16px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px; left: 3px;
+    transition: transform var(--transition);
+  }
+
+  .att-switch.present::after { transform: translateX(18px); }
+
+  .att-label { font-size: 12px; color: var(--text3); }
+
+  .row-actions { display: flex; align-items: center; gap: 6px; }
+
+  .action-btn {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+    color: var(--text3);
+  }
+
+  .action-btn:hover { transform: scale(1.1); }
+  .action-btn.edit:hover { background: rgba(59,130,246,0.15); color: var(--accent2); border-color: var(--accent); }
+  .action-btn.del:hover { background: rgba(244,63,94,0.15); color: var(--rose2); border-color: var(--rose); }
+  .action-btn svg { width: 13px; height: 13px; }
+
+  .empty-state {
+    text-align: center;
+    padding: 64px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .empty-icon {
+    width: 72px; height: 72px;
+    border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text3);
+  }
+
+  .empty-icon svg { width: 32px; height: 32px; }
+  .empty-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); }
+  .empty-sub { font-size: 14px; color: var(--text3); max-width: 280px; line-height: 1.5; }
+
+  /* ═══════════════════════════════════════════
+     ADD/EDIT STUDENT FORM PAGE
+  ═══════════════════════════════════════════ */
+  .form-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 28px;
+    transition: background var(--transition);
+  }
+
+  .form-card-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 7px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  select, textarea {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    color: var(--text);
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    background: var(--surface2);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+  }
+
+  input.error { border-color: var(--rose); box-shadow: 0 0 0 3px rgba(244,63,94,0.1); }
+  .error-msg { font-size: 11px; color: var(--rose2); display: none; }
+  .error-msg.show { display: block; }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Photo card */
+  .photo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    transition: background var(--transition);
+  }
+
+  .photo-preview-wrap {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--border2);
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: border-color var(--transition);
+  }
+
+  .photo-preview-wrap:hover { border-color: var(--accent); }
+
+  #photoPreview {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  .photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--text3);
+  }
+
+  .photo-placeholder svg { width: 32px; height: 32px; }
+  .photo-placeholder span { font-size: 11px; }
+
+  .photo-actions { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+
+  /* Camera modal */
+  #cameraModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+
+  #cameraModal.open { display: flex; }
+
+  .camera-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 420px;
+    max-width: 90vw;
+  }
+
+  #cameraVideo {
+    width: 100%;
+    border-radius: var(--radius);
+    border: 2px solid var(--border2);
+    background: #000;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+  }
+
+  .camera-actions { display: flex; gap: 10px; }
+
+  /* ═══════════════════════════════════════════
+     ATTENDANCE PAGE
+  ═══════════════════════════════════════════ */
+  .att-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .att-date {
+    font-size: 13px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .att-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .att-student-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all var(--transition);
+    cursor: pointer;
+  }
+
+  .att-student-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+
+  .att-student-card.present { border-color: rgba(16,185,129,0.35); background: rgba(16,185,129,0.04); }
+  .att-student-card.absent { border-color: rgba(244,63,94,0.35); background: rgba(244,63,94,0.04); }
+
+  .att-info { flex: 1; min-width: 0; }
+  .att-name { font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .att-meta { font-size: 12px; color: var(--text3); }
+
+  /* ═══════════════════════════════════════════
+     MODAL
+  ═══════════════════════════════════════════ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 28px;
+    width: 380px;
+    max-width: 90vw;
+    animation: slideUp 0.25s ease;
+    transition: background var(--transition);
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .modal-icon svg { width: 24px; height: 24px; }
+  .modal-icon.danger { background: rgba(244,63,94,0.12); color: var(--rose2); }
+  .modal-icon.info { background: rgba(59,130,246,0.12); color: var(--accent2); }
+  .modal-icon.success { background: rgba(16,185,129,0.12); color: var(--emerald2); }
+
+  .modal-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .modal-body { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 22px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+  /* ═══════════════════════════════════════════
+     TOAST
+  ═══════════════════════════════════════════ */
+  #toast-container {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--text);
+    box-shadow: var(--shadow2);
+    animation: toastIn 0.3s cubic-bezier(0.4,0,0.2,1);
+    min-width: 260px;
+    max-width: 360px;
+    pointer-events: all;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes toastOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(20px); }
+  }
+
+  .toast.removing { animation: toastOut 0.3s ease forwards; }
+
+  .toast-icon { width: 18px; height: 18px; flex-shrink: 0; }
+  .toast.success .toast-icon { color: var(--emerald2); }
+  .toast.error .toast-icon { color: var(--rose2); }
+  .toast.info .toast-icon { color: var(--accent2); }
+  .toast-text { flex: 1; }
+
+  .toast-close { background: none; border: none; cursor: pointer; color: var(--text3); padding: 0; transition: color var(--transition); }
+  .toast-close:hover { color: var(--text); }
+  .toast-close svg { width: 14px; height: 14px; }
+
+  /* ═══════════════════════════════════════════
+     SETTINGS / IMPORT-EXPORT PAGE
+  ═══════════════════════════════════════════ */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .settings-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: background var(--transition);
+  }
+
+  .settings-card-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .settings-card-icon svg { width: 22px; height: 22px; }
+  .settings-card h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; }
+  .settings-card p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+  .settings-card .btn { align-self: flex-start; }
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 0px; }
+
+    #sidebar {
+      transform: translateX(-240px);
+      width: 240px;
+    }
+
+    #sidebar.open { transform: translateX(0); }
+
+    #main { margin-left: 0; }
+
+    #hamburger { display: flex; }
+
+    .dash-two-col { grid-template-columns: 1fr; }
+    .form-layout { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 16px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .table-controls { flex-direction: column; align-items: stretch; }
+    .table-controls .ml-auto { margin-left: 0; }
+    #topbar { padding: 0 16px; }
+    .search-wrap { max-width: 100%; margin: 0 8px; }
+  }
+
+  /* Overlay for mobile sidebar */
+  #sidebarOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 199;
+  }
+
+  #sidebarOverlay.show { display: block; }
+
+  /* Loading spinner */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Pulse dot */
+  .live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--emerald);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  /* Tab indicator */
+  .tab-row {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 22px;
+  }
+
+  .tab-item {
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition);
+    user-select: none;
+  }
+
+  .tab-item:hover { color: var(--text2); }
+  .tab-item.active { color: var(--accent2); border-bottom-color: var(--accent); }
+
+  /* Range input */
+  input[type="file"] { display: none; }
+  .file-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--font-body);
+    background: var(--surface);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    transition: all var(--transition);
+  }
+
+  .file-label:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+  .file-label svg { width: 15px; height: 15px; }
+
+  /* Highlight anim for new rows */
+  @keyframes rowHighlight {
+    0% { background: rgba(59,130,246,0.2); }
+    100% { background: transparent; }
+  }
+
+  .row-new td { animation: rowHighlight 1.5s ease; }
+
+  /* ═══════════════════════════════════════════
+     UI UPGRADE LAYER — ANIMATIONS & POLISH
+  ═══════════════════════════════════════════ */
+
+  /* --- Page fade-in with stagger --- */
+  @keyframes pageFadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .page.active {
+    animation: pageFadeUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* --- Staggered children on dashboard --- */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .stat-card {
+    animation: fadeSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-play-state: paused;
+  }
+  .page-dashboard-ready .stat-card { animation-play-state: running; }
+  .stat-card:nth-child(1) { animation-delay: 0.05s; }
+  .stat-card:nth-child(2) { animation-delay: 0.12s; }
+  .stat-card:nth-child(3) { animation-delay: 0.19s; }
+  .stat-card:nth-child(4) { animation-delay: 0.26s; }
+
+  .quick-btn {
+    animation: fadeSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-play-state: paused;
+  }
+  .page-dashboard-ready .quick-btn { animation-play-state: running; }
+  .quick-btn:nth-child(1) { animation-delay: 0.15s; }
+  .quick-btn:nth-child(2) { animation-delay: 0.22s; }
+  .quick-btn:nth-child(3) { animation-delay: 0.29s; }
+  .quick-btn:nth-child(4) { animation-delay: 0.36s; }
+  .quick-btn:nth-child(5) { animation-delay: 0.43s; }
+
+  /* --- Hover lift on cards --- */
+  .stat-card {
+    will-change: transform, box-shadow;
+    transition:
+      border-color var(--transition),
+      transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.28s ease,
+      background var(--transition);
+  }
+  .stat-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35), 0 4px 12px rgba(59,130,246,0.1);
+    border-color: var(--border2);
+  }
+
+  .settings-card {
+    transition:
+      background var(--transition),
+      border-color var(--transition),
+      transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.28s ease;
+  }
+  .settings-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.3);
+    border-color: var(--border2);
+  }
+
+  .att-student-card {
+    transition:
+      all var(--transition),
+      transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.25s ease;
+  }
+  .att-student-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+    border-color: var(--border2);
+  }
+
+  .quick-btn {
+    transition:
+      background var(--transition),
+      border-color var(--transition),
+      color var(--transition),
+      transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.28s ease;
+  }
+  .quick-btn:hover {
+    background: var(--surface2);
+    border-color: var(--accent);
+    transform: translateY(-5px) scale(1.03);
+    color: var(--text);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.15);
+  }
+
+  /* --- Button press effect --- */
+  .btn {
+    position: relative;
+    overflow: hidden;
+    transition:
+      all var(--transition),
+      transform 0.15s ease;
+  }
+  .btn:active { transform: scale(0.96) !important; }
+
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .btn:hover::after { opacity: 1; }
+
+  /* Ripple on btn-primary */
+  @keyframes ripple {
+    from { transform: scale(0); opacity: 0.4; }
+    to   { transform: scale(4); opacity: 0; }
+  }
+  .btn-ripple {
+    position: absolute;
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.3);
+    pointer-events: none;
+    animation: ripple 0.6s ease-out forwards;
+    transform-origin: center;
+    margin-left: -20px; margin-top: -20px;
+  }
+
+  /* --- Loading spinner improvement --- */
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.65s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 2px;
+  }
+
+  /* --- Improved empty state --- */
+  .empty-state {
+    padding: 72px 32px;
+    gap: 16px;
+  }
+
+  .empty-icon {
+    width: 88px; height: 88px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--surface2), var(--bg3));
+    border: 1px solid var(--border);
+    color: var(--text3);
+    animation: fadeSlideUp 0.5s ease both;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  }
+
+  .empty-icon svg { width: 38px; height: 38px; }
+
+  .empty-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    animation: fadeSlideUp 0.5s 0.1s ease both;
+  }
+
+  .empty-sub {
+    font-size: 14px;
+    color: var(--text3);
+    max-width: 300px;
+    line-height: 1.6;
+    animation: fadeSlideUp 0.5s 0.18s ease both;
+  }
+
+  .empty-state .btn {
+    margin-top: 4px;
+    animation: fadeSlideUp 0.5s 0.26s ease both;
+    padding: 11px 24px;
+    font-size: 14px;
+  }
+
+  /* --- Enhanced toast --- */
+  .toast {
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+    gap: 10px;
+    backdrop-filter: blur(8px);
+  }
+
+  .toast.success { border-left: 3px solid var(--emerald); }
+  .toast.error   { border-left: 3px solid var(--rose); }
+  .toast.info    { border-left: 3px solid var(--accent); }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(32px) scale(0.92); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
+  }
+
+  @keyframes toastOut {
+    from { opacity: 1; transform: translateX(0) scale(1); }
+    to   { opacity: 0; transform: translateX(32px) scale(0.9); }
+  }
+
+  /* --- Nav item transitions --- */
+  .nav-item {
+    transition:
+      background var(--transition),
+      color var(--transition),
+      transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.2s ease;
+  }
+  .nav-item:hover {
+    background: var(--surface);
+    color: var(--text);
+    transform: translateX(4px);
+  }
+
+  /* --- Icon button lift --- */
+  .icon-btn {
+    transition:
+      background var(--transition),
+      color var(--transition),
+      transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.2s ease;
+  }
+  .icon-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .icon-btn:active { transform: scale(0.9); }
+
+  /* --- Action button hover --- */
+  .action-btn {
+    transition:
+      background var(--transition),
+      color var(--transition),
+      border-color var(--transition),
+      transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.2s ease;
+  }
+  .action-btn:hover { transform: scale(1.18); }
+
+  /* --- Logo pulse animation --- */
+  .logo-icon {
+    animation: logoPulse 4s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+    50% { box-shadow: 0 0 0 6px rgba(59,130,246,0.12); }
+  }
+
+  /* --- Live dot animation upgrade --- */
+  .live-dot {
+    width: 8px; height: 8px;
+    position: relative;
+    animation: none;
+  }
+  .live-dot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--emerald);
+    animation: livePulse 2s ease-out infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+  }
+  .live-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(16,185,129,0.3);
+    animation: liveRing 2s ease-out infinite;
+  }
+  @keyframes liveRing {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+
+  /* --- Stat bar animation --- */
+  .stat-bar-fill {
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    height: 100%;
+    border-radius: 4px;
+  }
+
+  /* --- Progress bar shimmer --- */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* --- Form input transitions --- */
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  select, textarea {
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease,
+      box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.15s ease;
+  }
+  input:focus, select:focus, textarea:focus {
+    transform: translateY(-1px);
+  }
+
+  /* --- Attendance card status glow --- */
+  .att-student-card.present {
+    box-shadow: 0 0 0 1px rgba(16,185,129,0.25), 0 4px 16px rgba(16,185,129,0.08);
+  }
+  .att-student-card.absent {
+    box-shadow: 0 0 0 1px rgba(244,63,94,0.2), 0 4px 16px rgba(244,63,94,0.06);
+  }
+
+  /* --- Dash hero animated gradient --- */
+  .dash-hero {
+    background: linear-gradient(135deg,
+      rgba(59,130,246,0.14) 0%,
+      rgba(139,92,246,0.09) 50%,
+      rgba(16,185,129,0.07) 100%);
+    background-size: 200% 200%;
+    animation: heroGradient 8s ease infinite;
+  }
+  @keyframes heroGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* --- Dash section hover --- */
+  .dash-section {
+    transition:
+      background var(--transition),
+      border-color var(--transition),
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  .dash-section:hover {
+    border-color: var(--border2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  /* --- Table row reveal --- */
+  @keyframes rowReveal {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  tbody tr {
+    animation: rowReveal 0.3s ease both;
+  }
+  tbody tr:nth-child(1) { animation-delay: 0.03s; }
+  tbody tr:nth-child(2) { animation-delay: 0.06s; }
+  tbody tr:nth-child(3) { animation-delay: 0.09s; }
+  tbody tr:nth-child(4) { animation-delay: 0.12s; }
+  tbody tr:nth-child(5) { animation-delay: 0.15s; }
+  tbody tr:nth-child(n+6) { animation-delay: 0.18s; }
+
+  /* --- Att card grid stagger --- */
+  .att-student-card {
+    animation: fadeSlideUp 0.35s ease both;
+  }
+  #attGrid .att-student-card:nth-child(1) { animation-delay: 0.04s; }
+  #attGrid .att-student-card:nth-child(2) { animation-delay: 0.08s; }
+  #attGrid .att-student-card:nth-child(3) { animation-delay: 0.12s; }
+  #attGrid .att-student-card:nth-child(4) { animation-delay: 0.16s; }
+  #attGrid .att-student-card:nth-child(n+5) { animation-delay: 0.20s; }
+
+  /* --- Improved activity items --- */
+  .activity-item {
+    transition:
+      background var(--transition),
+      transform 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .activity-item:hover {
+    background: var(--surface2);
+    transform: translateX(3px);
+    border-color: var(--border2);
+  }
+
+  /* --- Attendance empty state improvement --- */
+  #attEmpty {
+    padding: 80px 32px !important;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* --- Search bar focus glow --- */
+  #globalSearch:focus {
+    border-color: var(--accent);
+    background: var(--surface2);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.14);
+  }
+
+  /* --- Topbar subtle gradient line --- */
+  #topbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.3;
+  }
+
+  /* --- Photo preview hover --- */
+  .photo-preview-wrap {
+    transition:
+      border-color var(--transition),
+      transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.25s ease;
+  }
+  .photo-preview-wrap:hover {
+    border-color: var(--accent);
+    transform: scale(1.04);
+    box-shadow: 0 8px 28px rgba(59,130,246,0.2);
+  }
+
+  /* --- Modal entrance --- */
+  .modal {
+    animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes modalPop {
+    from { opacity: 0; transform: translateY(24px) scale(0.94); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* --- Number count-up display --- */
+  .stat-value {
+    transition: color 0.3s ease;
+    letter-spacing: -0.05em;
+  }
+
+  /* --- Improved stat card background glow --- */
+  .stat-card.blue:hover  { box-shadow: 0 16px 48px rgba(59,130,246,0.18); }
+  .stat-card.emerald:hover { box-shadow: 0 16px 48px rgba(16,185,129,0.18); }
+  .stat-card.rose:hover  { box-shadow: 0 16px 48px rgba(244,63,94,0.18); }
+  .stat-card.gold:hover  { box-shadow: 0 16px 48px rgba(245,158,11,0.18); }
+
+  /* --- Sidebar entrance on mobile --- */
+  #sidebar.open {
+    box-shadow: 4px 0 40px rgba(0,0,0,0.4);
+  }
+
+  /* --- Table hover row enhancement --- */
+  tr:hover td {
+    background: var(--surface2);
+  }
+
+  /* --- Badge hover subtle --- */
+  .badge {
+    transition: transform 0.15s ease;
+    cursor: default;
+  }
+  .badge:hover { transform: scale(1.05); }
+
+  /* --- Improved att-switch animation --- */
+  .att-switch {
+    transition:
+      background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.2s ease;
+  }
+  .att-switch.present {
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+  }
+  .att-switch:not(.present) {
+    box-shadow: 0 0 0 3px rgba(244,63,94,0.15);
+  }
+  .att-switch::after {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ═══════════════════════════════════════════
+     AUTH OVERLAY
+  ═══════════════════════════════════════════ */
+  #authOverlay {
+    position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    transition: opacity 0.4s ease;
+  }
+  #authOverlay.hidden { opacity: 0; pointer-events: none; }
+  .auth-card {
+    width: 100%; max-width: 440px; background: var(--bg2);
+    border: 1px solid var(--border2); border-radius: var(--radius2);
+    padding: 40px 36px; box-shadow: var(--shadow2); animation: fadeIn 0.4s ease;
+  }
+  .auth-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; justify-content: center; }
+  .auth-logo-icon {
+    width: 44px; height: 44px; background: linear-gradient(135deg, var(--accent), var(--violet));
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .auth-logo-icon svg { width: 22px; height: 22px; fill: white; }
+  .auth-logo-text { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.03em; color: var(--text); }
+  .auth-logo-text span { color: var(--accent2); }
+  .auth-tabs {
+    display: grid; grid-template-columns: 1fr 1fr; background: var(--surface);
+    border-radius: var(--radius); padding: 4px; margin-bottom: 24px; border: 1px solid var(--border);
+  }
+  .auth-tab {
+    padding: 9px; border-radius: 9px; text-align: center; font-size: 13px; font-weight: 500;
+    cursor: pointer; color: var(--text2); transition: background var(--transition), color var(--transition);
+    border: none; background: none; font-family: var(--font-body);
+  }
+  .auth-tab.active { background: var(--accent); color: white; }
+  .auth-role-toggle { display: flex; gap: 10px; margin-bottom: 22px; }
+  .auth-role-btn {
+    flex: 1; padding: 12px; border-radius: var(--radius); border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text2); font-size: 13px; font-weight: 500;
+    cursor: pointer; text-align: center; transition: all var(--transition); font-family: var(--font-body);
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+  }
+  .auth-role-btn .role-icon { font-size: 22px; }
+  .auth-role-btn.active { border-color: var(--accent); color: var(--accent2); background: rgba(59,130,246,0.08); }
+  .auth-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 6px; text-align: center; }
+  .auth-subtitle { font-size: 13px; color: var(--text2); text-align: center; margin-bottom: 22px; }
+  .auth-field { margin-bottom: 16px; }
+  .auth-field label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .auth-field input {
+    width: 100%; background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 11px 14px; font-size: 14px; color: var(--text);
+    font-family: var(--font-body); outline: none; transition: border-color var(--transition), background var(--transition);
+  }
+  .auth-field input:focus { border-color: var(--accent); background: var(--surface2); }
+  .auth-field input.err { border-color: var(--rose); }
+  .auth-err-msg { font-size: 12px; color: var(--rose2); margin-top: 5px; display: none; }
+  .auth-err-msg.show { display: block; }
+  .auth-submit {
+    width: 100%; padding: 13px; border-radius: var(--radius); border: none;
+    background: linear-gradient(135deg, var(--accent), var(--violet)); color: white;
+    font-size: 15px; font-weight: 600; cursor: pointer; font-family: var(--font-body);
+    margin-top: 8px; transition: opacity var(--transition), transform var(--transition); letter-spacing: 0.01em;
+  }
+  .auth-submit:hover { opacity: 0.92; transform: translateY(-1px); }
+  .auth-switch { text-align: center; margin-top: 16px; font-size: 13px; color: var(--text2); }
+  .auth-switch a { color: var(--accent2); cursor: pointer; font-weight: 500; text-decoration: none; }
+  .auth-switch a:hover { text-decoration: underline; }
+  .auth-global-err {
+    background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.3);
+    border-radius: var(--radius); padding: 10px 14px; font-size: 13px;
+    color: var(--rose2); margin-bottom: 16px; display: none;
+  }
+  .auth-global-err.show { display: block; }
+
+  /* ═══════════════════════════════════════════
+     STUDENT PORTAL
+  ═══════════════════════════════════════════ */
+  #studentPortal { display: none; min-height: 100vh; background: var(--bg); flex-direction: column; }
+  #studentPortal.active { display: flex; }
+
+  /* Portal fade-in */
+  @keyframes spFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  #studentPortal.active { animation: spFadeIn 0.4s ease both; }
+
+  /* Topbar */
+  .sp-topbar {
+    height: 68px; background: var(--bg2); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+    position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 var(--border), 0 2px 16px rgba(0,0,0,0.06);
+  }
+  .sp-topbar::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--emerald2), transparent); opacity: 0.25;
+  }
+  .sp-topbar-left { display: flex; align-items: center; gap: 12px; }
+  .sp-logo { display: flex; align-items: center; gap: 9px; }
+  .sp-logo-icon {
+    width: 34px; height: 34px; background: linear-gradient(135deg, var(--emerald), var(--accent));
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.15);
+    animation: logoPulse 4s ease-in-out infinite;
+  }
+  .sp-logo-icon svg { width: 17px; height: 17px; fill: white; }
+  .sp-logo-text { font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+  .sp-logo-text span { color: var(--emerald2); }
+  .sp-portal-badge {
+    font-size: 10px; font-weight: 700; background: rgba(16,185,129,0.12); color: var(--emerald2);
+    border: 1px solid rgba(16,185,129,0.28); border-radius: 20px; padding: 3px 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    box-shadow: 0 0 12px rgba(16,185,129,0.1);
+  }
+  .sp-topbar-right { display: flex; align-items: center; gap: 10px; }
+  .sp-greeting-chip {
+    font-size: 12px; color: var(--text2); font-weight: 500;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 14px; display: flex; align-items: center; gap: 7px;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .sp-greeting-chip:hover { border-color: var(--border2); background: var(--surface2); }
+  .sp-logout-btn {
+    display: flex; align-items: center; gap: 7px; padding: 8px 16px;
+    border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface);
+    color: var(--text2); font-size: 13px; font-weight: 500; cursor: pointer;
+    font-family: var(--font-body); transition: all var(--transition);
+  }
+  .sp-logout-btn:hover { background: rgba(244,63,94,0.1); color: var(--rose2); border-color: rgba(244,63,94,0.3); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(244,63,94,0.1); }
+  .sp-logout-btn svg { width: 15px; height: 15px; }
+
+  /* Body / layout */
+  .sp-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px 72px; background: var(--bg); }
+  .sp-layout { width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 22px; }
+
+  /* Slide down keyframe */
+  @keyframes spSlideDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Greeting banner */
+  .sp-greeting-banner {
+    background: linear-gradient(135deg, rgba(16,185,129,0.10) 0%, rgba(59,130,246,0.12) 50%, rgba(139,92,246,0.08) 100%);
+    background-size: 200% 200%; animation: heroGradient 8s ease infinite, spSlideDown 0.45s cubic-bezier(0.4,0,0.2,1) both;
+    border: 1px solid rgba(59,130,246,0.2); border-radius: var(--radius2);
+    padding: 22px 28px; display: flex; align-items: center; justify-content: space-between;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 24px rgba(59,130,246,0.07);
+    transition: box-shadow var(--transition), border-color var(--transition);
+  }
+  .sp-greeting-banner:hover { box-shadow: 0 8px 36px rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.25); }
+  .sp-greeting-banner::after {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(16,185,129,0.12), transparent);
+    border-radius: 50%; pointer-events: none;
+  }
+  .sp-greeting-text { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+  .sp-greeting-sub { font-size: 13px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+  .sp-greeting-emoji { font-size: 38px; line-height: 1; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15)); flex-shrink: 0; }
+
+  /* Profile card */
+  .sp-card {
+    width: 100%; background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius2); overflow: hidden; box-shadow: var(--shadow2);
+    animation: spSlideDown 0.45s cubic-bezier(0.4,0,0.2,1) 0.08s both;
+    transition: box-shadow 0.3s ease, border-color var(--transition), transform 0.25s ease;
+  }
+  .sp-card:hover { box-shadow: 0 16px 56px rgba(59,130,246,0.14); border-color: var(--border2); transform: translateY(-1px); }
+  .sp-card-header {
+    padding: 30px 32px 26px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.07));
+    border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 22px;
+    position: relative; overflow: hidden;
+  }
+  .sp-card-header::after {
+    content: ''; position: absolute; bottom: -30px; right: -30px;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(139,92,246,0.12), transparent);
+    border-radius: 50%; pointer-events: none;
+  }
+  .sp-avatar {
+    width: 88px; height: 88px; border-radius: 50%; object-fit: cover;
+    border: 3px solid var(--accent); flex-shrink: 0;
+    box-shadow: 0 0 0 5px rgba(59,130,246,0.14), 0 6px 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .sp-avatar:hover { transform: scale(1.05); box-shadow: 0 0 0 7px rgba(59,130,246,0.18), 0 8px 28px rgba(0,0,0,0.25); }
+  .sp-avatar-placeholder {
+    width: 88px; height: 88px; border-radius: 50%; border: 3px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 32px; font-weight: 800; flex-shrink: 0;
+    box-shadow: 0 0 0 5px rgba(59,130,246,0.14), 0 6px 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+  }
+  .sp-avatar-placeholder:hover { transform: scale(1.05); }
+  .sp-name { font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: -0.025em; color: var(--text); margin-bottom: 7px; }
+  .sp-roll-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.28);
+    border-radius: 20px; padding: 4px 13px; font-size: 12px; font-weight: 600;
+    color: var(--accent2); letter-spacing: 0.04em;
+    box-shadow: 0 0 8px rgba(59,130,246,0.1);
+  }
+  .sp-card-body { padding: 24px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .sp-info-block {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px;
+    transition: border-color 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background var(--transition), box-shadow 0.2s ease;
+  }
+  .sp-info-block:hover { border-color: var(--accent); transform: translateY(-3px); background: var(--surface2); box-shadow: 0 6px 20px rgba(59,130,246,0.1); }
+  .sp-info-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text3); margin-bottom: 7px; display: flex; align-items: center; gap: 6px;
+  }
+  .sp-info-label svg { width: 13px; height: 13px; opacity: 0.7; }
+  .sp-info-value { font-size: 16px; font-weight: 600; color: var(--text); font-family: var(--font-display); }
+  .sp-card-footer {
+    padding: 14px 32px; border-top: 1px solid var(--border); background: var(--surface);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sp-status-dot { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--emerald2); font-weight: 500; }
+  .sp-status-dot::before {
+    content: ''; width: 8px; height: 8px; background: var(--emerald); border-radius: 50%;
+    display: block; box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+    animation: livePulse 2s ease-out infinite;
+  }
+  .sp-joined { font-size: 12px; color: var(--text3); }
+
+  /* Attendance card */
+  .sp-attendance-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius2);
+    overflow: hidden; box-shadow: var(--shadow);
+    animation: spSlideDown 0.45s cubic-bezier(0.4,0,0.2,1) 0.14s both;
+    transition: box-shadow 0.3s ease, border-color var(--transition), transform 0.25s ease;
+  }
+  .sp-attendance-card:hover { box-shadow: 0 12px 48px rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.28); transform: translateY(-1px); }
+
+  .sp-section-title {
+    font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text);
+    padding: 20px 24px 0; display: flex; align-items: center; gap: 8px;
+  }
+  .sp-section-title::before { content: ''; width: 3px; height: 14px; background: var(--emerald); border-radius: 3px; display: block; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
+
+  .sp-att-body {
+    padding: 18px 24px 20px;
+    display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center;
+  }
+
+  /* Circular progress — enhanced */
+  .sp-circle-wrap { position: relative; width: 112px; height: 112px; flex-shrink: 0; }
+  .sp-circle-svg { transform: rotate(-90deg); width: 112px; height: 112px; }
+  .sp-circle-bg { fill: none; stroke: var(--border); stroke-width: 9; }
+  .sp-circle-fill {
+    fill: none; stroke: var(--emerald); stroke-width: 9; stroke-linecap: round;
+    stroke-dasharray: 282.74; stroke-dashoffset: 282.74;
+    transition: stroke-dashoffset 1.3s cubic-bezier(0.4,0,0.2,1), stroke 0.4s ease;
+    filter: drop-shadow(0 0 4px rgba(16,185,129,0.4));
+  }
+  .sp-circle-fill.warn { stroke: var(--gold); filter: drop-shadow(0 0 4px rgba(245,158,11,0.4)); }
+  .sp-circle-fill.danger { stroke: var(--rose); filter: drop-shadow(0 0 4px rgba(244,63,94,0.4)); }
+  .sp-circle-center {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .sp-circle-pct { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
+  .sp-circle-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-top: 3px; }
+
+  /* Attendance stat pills — enhanced */
+  .sp-att-stats { display: flex; flex-direction: column; gap: 10px; }
+  .sp-att-stat {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 12px; border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--border);
+    transition: border-color var(--transition), transform 0.2s ease, background var(--transition);
+  }
+  .sp-att-stat:hover { border-color: var(--border2); transform: translateX(3px); }
+  .sp-att-stat-icon {
+    width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .sp-att-stat:hover .sp-att-stat-icon { transform: scale(1.1); }
+  .sp-att-stat-icon.present { background: rgba(16,185,129,0.14); color: var(--emerald2); box-shadow: 0 0 8px rgba(16,185,129,0.15); }
+  .sp-att-stat-icon.absent  { background: rgba(244,63,94,0.12);  color: var(--rose2); box-shadow: 0 0 8px rgba(244,63,94,0.12); }
+  .sp-att-stat-icon.total   { background: rgba(59,130,246,0.12);  color: var(--accent2); box-shadow: 0 0 8px rgba(59,130,246,0.12); }
+  .sp-att-stat-icon svg { width: 16px; height: 16px; }
+  .sp-att-stat-label { font-size: 12px; color: var(--text3); flex: 1; font-weight: 500; }
+  .sp-att-stat-val { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: var(--text); }
+
+  /* Progress bar row — enhanced */
+  .sp-att-bar-row { padding: 0 24px 22px; }
+  .sp-att-bar-label-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 8px; font-weight: 500; letter-spacing: 0.02em; }
+  .sp-att-bar-track { height: 8px; background: var(--border); border-radius: 8px; overflow: hidden; position: relative; }
+  .sp-att-bar-fill {
+    height: 100%; border-radius: 8px; background: var(--emerald); width: 0%;
+    transition: width 1.3s cubic-bezier(0.4,0,0.2,1), background 0.4s ease;
+    box-shadow: 0 0 8px rgba(16,185,129,0.4);
+    position: relative;
+  }
+  .sp-att-bar-fill::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    background-size: 200% 100%; animation: shimmer 2s linear infinite;
+  }
+  .sp-att-bar-fill.warn   { background: var(--gold); box-shadow: 0 0 8px rgba(245,158,11,0.4); }
+  .sp-att-bar-fill.danger { background: var(--rose); box-shadow: 0 0 8px rgba(244,63,94,0.4); }
+
+  /* Attendance status message badge */
+  .sp-att-status-msg {
+    margin: 0 24px 18px;
+    padding: 10px 16px; border-radius: var(--radius);
+    font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+    letter-spacing: 0.02em;
+  }
+  .sp-att-status-msg.good { background: rgba(16,185,129,0.1); color: var(--emerald2); border: 1px solid rgba(16,185,129,0.2); }
+  .sp-att-status-msg.warn { background: rgba(245,158,11,0.1); color: var(--gold2);    border: 1px solid rgba(245,158,11,0.2); }
+  .sp-att-status-msg.danger { background: rgba(244,63,94,0.1); color: var(--rose2);   border: 1px solid rgba(244,63,94,0.2); }
+  .sp-att-status-msg.none { background: var(--surface); color: var(--text3);           border: 1px solid var(--border); }
+
+  /* History card — enhanced */
+  .sp-history-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius2);
+    overflow: hidden; box-shadow: var(--shadow);
+    animation: spSlideDown 0.45s cubic-bezier(0.4,0,0.2,1) 0.20s both;
+    transition: box-shadow 0.3s ease, border-color var(--transition), transform 0.25s ease;
+  }
+  .sp-history-card:hover { border-color: var(--border2); box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(-1px); }
+  .sp-history-list { padding: 14px 24px 22px; display: flex; flex-direction: column; gap: 8px; }
+  .sp-history-item {
+    display: flex; align-items: center; gap: 14px; padding: 11px 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    transition: border-color 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background var(--transition), box-shadow 0.2s ease;
+    cursor: default;
+  }
+  .sp-history-item:hover { border-color: var(--border2); transform: translateX(4px); background: var(--surface2); box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+  .sp-history-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; transition: transform 0.2s ease; }
+  .sp-history-item:hover .sp-history-dot { transform: scale(1.3); }
+  .sp-history-dot.present { background: var(--emerald); box-shadow: 0 0 0 3px rgba(16,185,129,0.2); }
+  .sp-history-dot.absent  { background: var(--rose);    box-shadow: 0 0 0 3px rgba(244,63,94,0.2); }
+  .sp-history-date { font-size: 13px; color: var(--text2); flex: 1; font-weight: 500; }
+  .sp-history-status { font-size: 11px; font-weight: 700; padding: 3px 11px; border-radius: 20px; letter-spacing: 0.05em; }
+  .sp-history-status.present { background: rgba(16,185,129,0.12); color: var(--emerald2); border: 1px solid rgba(16,185,129,0.2); }
+  .sp-history-status.absent  { background: rgba(244,63,94,0.12);  color: var(--rose2);    border: 1px solid rgba(244,63,94,0.2); }
+  .sp-history-empty { font-size: 13px; color: var(--text3); text-align: center; padding: 24px 0; }
+
+  /* Logout confirm modal */
+  .sp-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 10000;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  }
+  .sp-modal-overlay.open { opacity: 1; pointer-events: all; }
+  .sp-modal {
+    background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius2);
+    padding: 32px 28px; max-width: 360px; width: 100%; box-shadow: var(--shadow2);
+    transform: scale(0.93); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    text-align: center;
+  }
+  .sp-modal-overlay.open .sp-modal { transform: scale(1); }
+  .sp-modal-icon {
+    width: 52px; height: 52px; border-radius: 14px; background: rgba(244,63,94,0.1);
+    border: 1px solid rgba(244,63,94,0.2); display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; color: var(--rose2);
+  }
+  .sp-modal-icon svg { width: 24px; height: 24px; }
+  .sp-modal-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .sp-modal-body { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 24px; }
+  .sp-modal-actions { display: flex; gap: 10px; }
+  .sp-modal-actions button { flex: 1; padding: 11px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font-body); border: none; transition: all var(--transition); }
+  .sp-modal-cancel { background: var(--surface2); color: var(--text2); border: 1px solid var(--border) !important; }
+  .sp-modal-cancel:hover { background: var(--surface); color: var(--text); }
+  .sp-modal-confirm { background: var(--rose); color: white; }
+  .sp-modal-confirm:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  /* Logout modal — enhanced */
+  .sp-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    backdrop-filter: blur(6px);
+  }
+  .sp-modal-overlay.open { opacity: 1; pointer-events: all; }
+  .sp-modal {
+    background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius2);
+    padding: 36px 32px; max-width: 380px; width: 100%;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.45), 0 4px 20px rgba(0,0,0,0.2);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    text-align: center;
+  }
+  .sp-modal-overlay.open .sp-modal { transform: scale(1) translateY(0); }
+  .sp-modal-icon {
+    width: 56px; height: 56px; border-radius: 16px; background: rgba(244,63,94,0.1);
+    border: 1px solid rgba(244,63,94,0.22); display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px; color: var(--rose2);
+    box-shadow: 0 0 24px rgba(244,63,94,0.12);
+  }
+  .sp-modal-icon svg { width: 26px; height: 26px; }
+  .sp-modal-title { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 10px; letter-spacing: -0.02em; }
+  .sp-modal-body { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 26px; }
+  .sp-modal-actions { display: flex; gap: 10px; }
+  .sp-modal-actions button { flex: 1; padding: 12px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font-body); border: none; transition: all 0.2s ease; }
+  .sp-modal-cancel { background: var(--surface2); color: var(--text2); border: 1px solid var(--border) !important; }
+  .sp-modal-cancel:hover { background: var(--surface); color: var(--text); transform: translateY(-1px); }
+  .sp-modal-confirm { background: linear-gradient(135deg, var(--rose), #c9184a); color: white; box-shadow: 0 4px 14px rgba(244,63,94,0.3); }
+  .sp-modal-confirm:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(244,63,94,0.4); }
+
+  /* Teacher logout button in sidebar footer */
+  .teacher-logout-btn {
+    display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+    border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface);
+    color: var(--text2); font-size: 13px; font-weight: 500; cursor: pointer;
+    font-family: var(--font-body); transition: all var(--transition); width: 100%;
+  }
+  .teacher-logout-btn svg { width: 15px; height: 15px; }
+  .teacher-logout-btn:hover { background: rgba(244,63,94,0.08); color: var(--rose2); border-color: rgba(244,63,94,0.3); }
+  .teacher-info-bar {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    background: rgba(59,130,246,0.08); border-radius: var(--radius); border: 1px solid rgba(59,130,246,0.2);
+    margin-bottom: 4px;
+  }
+  .teacher-info-bar .t-avatar {
+    width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),var(--violet));
+    display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: white; flex-shrink: 0;
+  }
+  .teacher-info-bar .t-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .teacher-info-bar .t-role { font-size: 10px; color: var(--accent2); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<!-- ══════ SIDEBAR ══════ -->
+<nav id="sidebar" role="navigation" aria-label="Main navigation">
+  <div class="sidebar-logo">
+    <div class="logo-badge">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 11-6-11-6zM1 17l11 6 11-6M1 13l11 6 11-6"/></svg>
+      </div>
+      <span class="logo-text">Edu<span>Track</span></span>
+    </div>
+    <div class="sidebar-subtitle">Student Management</div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+
+    <button class="nav-item active" onclick="navigate('dashboard')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Dashboard
+      <span class="nav-badge" id="totalBadge">0</span>
+    </button>
+
+    <div class="nav-section-label">Students</div>
+
+    <button class="nav-item" onclick="navigate('students')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      All Students
+    </button>
+
+    <button class="nav-item" onclick="navigate('add')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Add Student
+    </button>
+
+    <button class="nav-item" onclick="navigate('attendance')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Attendance
+    </button>
+
+    <div class="nav-section-label">Data</div>
+
+    <button class="nav-item" onclick="navigate('settings')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 1 0 4.93 19.07 10 10 0 0 0 19.07 4.93z"/><path d="M10 2a10 10 0 0 1 0 20"/></svg>
+      Import / Export
+    </button>
+
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="teacher-info-bar" id="teacherInfoBar">
+      <div class="t-avatar" id="teacherAvatar">T</div>
+      <div>
+        <div class="t-name" id="teacherName">Teacher</div>
+        <div class="t-role">Teacher Portal</div>
+      </div>
+    </div>
+    <button class="teacher-logout-btn" onclick="authLogout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </button>
+    <div class="theme-toggle" onclick="toggleTheme()" role="button" aria-label="Toggle theme">
+      <span class="toggle-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        Light Mode
+      </span>
+      <div class="toggle-switch"></div>
+    </div>
+  </div>
+</nav>
+<div id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ══════ MAIN ══════ -->
+<div id="main">
+
+  <!-- TOPBAR -->
+  <header id="topbar">
+    <div class="topbar-left">
+      <button id="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <h1 class="page-title" id="pageTitle">Dashboard</h1>
+    </div>
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="globalSearch" placeholder="Search students..." oninput="onGlobalSearch(this.value)" autocomplete="off">
+    </div>
+    <div class="topbar-right">
+      <div class="live-dot" title="System online"></div>
+      <button class="icon-btn" onclick="exportCSV()" title="Export CSV">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="icon-btn" onclick="navigate('add')" title="Add Student">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═════ PAGE: DASHBOARD ═════ -->
+  <section class="page active" id="page-dashboard">
+    <div class="dash-hero">
+      <div class="dash-hero-title">Welcome back 👋</div>
+      <div class="dash-hero-sub" id="dashGreet">Loading student overview...</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-label">Total Students</div>
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="bar-total" style="width:100%"></div></div>
+      </div>
+      <div class="stat-card emerald">
+        <div class="stat-label">Present Today</div>
+        <div class="stat-value" id="stat-present">0</div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="bar-present" style="width:0%"></div></div>
+      </div>
+      <div class="stat-card rose">
+        <div class="stat-label">Absent Today</div>
+        <div class="stat-value" id="stat-absent">0</div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="bar-absent" style="width:0%"></div></div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-label">Attendance Rate</div>
+        <div class="stat-value" id="stat-rate">—</div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="bar-rate" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <h2 class="section-heading" style="margin-bottom:14px">Quick Actions</h2>
+    <div class="quick-actions">
+      <button class="quick-btn" onclick="navigate('add')">
+        <div class="quick-btn-icon" style="background:rgba(59,130,246,0.12);color:var(--accent2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        </div>
+        Add Student
+      </button>
+      <button class="quick-btn" onclick="navigate('attendance')">
+        <div class="quick-btn-icon" style="background:rgba(16,185,129,0.12);color:var(--emerald2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        Mark Attendance
+      </button>
+      <button class="quick-btn" onclick="exportCSV()">
+        <div class="quick-btn-icon" style="background:rgba(245,158,11,0.12);color:var(--gold2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        Export CSV
+      </button>
+      <button class="quick-btn" onclick="exportJSON()">
+        <div class="quick-btn-icon" style="background:rgba(139,92,246,0.12);color:var(--violet2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        Export JSON
+      </button>
+      <button class="quick-btn" onclick="navigate('settings')">
+        <div class="quick-btn-icon" style="background:rgba(244,63,94,0.12);color:var(--rose2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.3"/></svg>
+        </div>
+        Backup Data
+      </button>
+    </div>
+
+    <div class="dash-two-col">
+      <div class="dash-section">
+        <div class="section-heading">Attendance Overview</div>
+        <div class="att-chart" id="attChart">
+          <div style="color:var(--text3);font-size:13px;align-self:center;width:100%;text-align:center">No data yet</div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <div class="section-heading">Recent Activity</div>
+        <div class="activity-list" id="activityList">
+          <div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0">No activity yet</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ PAGE: STUDENTS ═════ -->
+  <section class="page" id="page-students">
+    <div class="table-controls">
+      <select class="filter-select" id="filterClass" onchange="renderTable()">
+        <option value="">All Classes</option>
+        <option value="FE COMS">FE COMS</option>
+        <option value="FE IT">FE IT</option>
+        <option value="FE ECS">FE ECS</option>
+        <option value="SE COMS">SE COMS</option>
+        <option value="SE IT">SE IT</option>
+        <option value="SE ECS">SE ECS</option>
+        <option value="TE COMS">TE COMS</option>
+        <option value="TE IT">TE IT</option>
+        <option value="TE ECS">TE ECS</option>
+        <option value="BE COMS">BE COMS</option>
+        <option value="BE IT">BE IT</option>
+        <option value="BE ECS">BE ECS</option>
+      </select>
+      <select class="filter-select" id="filterDiv" onchange="renderTable()">
+        <option value="">All Divisions</option>
+        <option value="A">Division A</option>
+        <option value="B">Division B</option>
+        <option value="C">Division C</option>
+      </select>
+      <select class="filter-select" id="sortBy" onchange="renderTable()">
+        <option value="name">Sort by Name</option>
+        <option value="roll">Sort by Roll No.</option>
+        <option value="class">Sort by Class</option>
+      </select>
+      <div class="ml-auto" style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="navigate('add')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Student
+        </button>
+        <button class="btn btn-secondary" onclick="exportCSV()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="studentTable">
+        <thead>
+          <tr>
+            <th onclick="setSort('roll')">Roll No <span class="sort-icon">↕</span></th>
+            <th onclick="setSort('name')">Student <span class="sort-icon">↕</span></th>
+            <th onclick="setSort('class')">Class <span class="sort-icon">↕</span></th>
+            <th>Division</th>
+            <th>Attendance</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentTbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═════ PAGE: ADD / EDIT ═════ -->
+  <section class="page" id="page-add">
+    <div class="form-layout">
+      <div class="form-card">
+        <div class="form-card-title" id="formTitle">Add New Student</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fRoll">Roll Number *</label>
+            <input type="text" id="fRoll" list="rollSuggestions" placeholder="e.g. 2024001" autocomplete="off">
+            <datalist id="rollSuggestions"></datalist>
+            <span class="error-msg" id="eRoll">Enter a unique roll number</span>
+          </div>
+          <div class="form-group">
+            <label for="fName">Full Name *</label>
+            <input type="text" id="fName" placeholder="Student's full name">
+            <span class="error-msg" id="eName">Name is required</span>
+          </div>
+          <div class="form-group">
+            <label for="fClass">Class *</label>
+            <select id="fClass">
+              <option value="">Select Class</option>
+              <option value="FE COMS">FE COMS</option>
+              <option value="FE IT">FE IT</option>
+              <option value="FE ECS">FE ECS</option>
+              <option value="SE COMS">SE COMS</option>
+              <option value="SE IT">SE IT</option>
+              <option value="SE ECS">SE ECS</option>
+              <option value="TE COMS">TE COMS</option>
+              <option value="TE IT">TE IT</option>
+              <option value="TE ECS">TE ECS</option>
+              <option value="BE COMS">BE COMS</option>
+              <option value="BE IT">BE IT</option>
+              <option value="BE ECS">BE ECS</option>
+            </select>
+            <span class="error-msg" id="eClass">Class is required</span>
+          </div>
+          <div class="form-group">
+            <label for="fDiv">Division *</label>
+            <select id="fDiv">
+              <option value="">Select Division</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+            </select>
+            <span class="error-msg" id="eDiv">Division is required</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" id="saveBtn" onclick="saveStudent()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Student
+          </button>
+          <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+          <button class="btn btn-secondary" onclick="navigate('students')" style="margin-left:auto">Cancel</button>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <div class="photo-preview-wrap">
+          <img id="photoPreview" alt="Student photo">
+          <div class="photo-placeholder" id="photoPlaceholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>No Photo</span>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text3);text-align:center">Student photo will appear here</div>
+        <div class="photo-actions">
+          <button class="btn btn-secondary" onclick="openCamera()" style="width:100%;justify-content:center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Capture Photo
+          </button>
+          <label class="file-label" for="uploadPhoto" style="width:100%;justify-content:center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Photo
+          </label>
+          <input type="file" id="uploadPhoto" accept="image/*" onchange="handleUpload(this)">
+          <button class="btn btn-danger" onclick="clearPhoto()" id="clearPhotoBtn" style="display:none;width:100%;justify-content:center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Remove Photo
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ PAGE: ATTENDANCE ═════ -->
+  <section class="page" id="page-attendance">
+    <div class="att-header">
+      <div class="att-date">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="attDate"></span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-success" onclick="markAll(true)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+          All Present
+        </button>
+        <button class="btn btn-danger" onclick="markAll(false)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          All Absent
+        </button>
+      </div>
+    </div>
+    <div class="att-card-grid" id="attGrid"></div>
+    <div style="text-align:center;padding:48px;color:var(--text3);display:none" id="attEmpty">
+      No students found. Add students first.
+    </div>
+  </section>
+
+  <!-- ═════ PAGE: SETTINGS ═════ -->
+  <section class="page" id="page-settings">
+    <div class="settings-grid">
+
+      <div class="settings-card">
+        <div class="settings-card-icon" style="background:rgba(245,158,11,0.12);color:var(--gold2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <h3>Export CSV</h3>
+        <p>Download all student records as a CSV spreadsheet. Compatible with Excel and Google Sheets.</p>
+        <button class="btn btn-gold" onclick="exportCSV()">Download CSV</button>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-card-icon" style="background:rgba(139,92,246,0.12);color:var(--violet2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h3>Export JSON</h3>
+        <p>Export full student data including photos as a JSON backup file. Use this to restore later.</p>
+        <button class="btn btn-secondary" onclick="exportJSON()">Download JSON</button>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-card-icon" style="background:rgba(59,130,246,0.12);color:var(--accent2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.3"/></svg>
+        </div>
+        <h3>Import JSON</h3>
+        <p>Restore student data from a previously exported JSON file. Existing data will be merged.</p>
+        <label class="file-label" for="importFile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Choose JSON File
+        </label>
+        <input type="file" id="importFile" accept=".json" onchange="importJSON(this)">
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-card-icon" style="background:rgba(244,63,94,0.12);color:var(--rose2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </div>
+        <h3>Clear All Data</h3>
+        <p>Permanently delete all student records and attendance data. This action cannot be undone.</p>
+        <button class="btn btn-danger" onclick="confirmClearAll()">Clear All Data</button>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-card-icon" style="background:rgba(16,185,129,0.12);color:var(--emerald2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <h3>Auto Backup</h3>
+        <p>Automatically download a JSON backup of your data. Recommended before clearing records.</p>
+        <button class="btn btn-success" onclick="autoBackup()">Download Backup</button>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-card-icon" style="background:rgba(59,130,246,0.12);color:var(--accent2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        </div>
+        <h3>Add Sample Data</h3>
+        <p>Populate the system with sample student records for demonstration purposes.</p>
+        <button class="btn btn-primary" onclick="addSampleData()">Load Sample Data</button>
+      </div>
+
+    </div>
+  </section>
+
+</div><!-- end #main -->
+
+<!-- ══════ CAMERA MODAL ══════ -->
+<div id="cameraModal" role="dialog" aria-modal="true" aria-label="Camera capture">
+  <div class="camera-box">
+    <div style="font-family:var(--font-display);font-size:16px;font-weight:700;align-self:flex-start">Capture Photo</div>
+    <video id="cameraVideo" autoplay playsinline></video>
+    <canvas id="captureCanvas" style="display:none"></canvas>
+    <div class="camera-actions">
+      <button class="btn btn-primary" onclick="capturePhoto()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/></svg>
+        Capture
+      </button>
+      <button class="btn btn-secondary" onclick="closeCamera()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CONFIRM MODAL ══════ -->
+<div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-icon danger" id="confirmIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div class="modal-title" id="confirmTitle">Confirm Action</div>
+    <div class="modal-body" id="confirmBody">Are you sure?</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn" onclick="confirmOk()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TOAST CONTAINER ══════ -->
+<div id="toast-container" aria-live="polite"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   STATE & DB
+═══════════════════════════════════════════════ */
+let DB = null;
+let dbReady = false;
+let dbReadyCallbacks = [];
+let students = [];
+let activity = [];
+let editingRoll = null;
+let currentPhotoB64 = null;
+let confirmCallback = null;
+let cameraStream = null;
+let sortField = 'name';
+let sortAsc = true;
+let searchTerm = '';
+const STORE = 'students';
+const ACT_STORE = 'activity';
+const ATT_KEY = 'today_att';
+
+// Avatar colors
+const AVATAR_COLORS = [
+  ['rgba(59,130,246,0.18)','#60a5fa'],
+  ['rgba(139,92,246,0.18)','#a78bfa'],
+  ['rgba(16,185,129,0.18)','#34d399'],
+  ['rgba(244,63,94,0.18)','#fb7185'],
+  ['rgba(245,158,11,0.18)','#fbbf24'],
+];
+
+/* ═══════════════════════════════════════════════
+   INDEXEDDB INIT
+═══════════════════════════════════════════════ */
+function makeStudentId(roll, cls, division) {
+  return String(roll).trim().toLowerCase() + '||' + String(cls).trim().toLowerCase() + '||' + String(division).trim().toLowerCase();
+}
+
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('EduTrackDB', 3);
+    req.onupgradeneeded = e => {
+      const upgradeDb = e.target.result;
+      // Drop old store if exists (old keyPath was 'roll'; new is 'id')
+      if (upgradeDb.objectStoreNames.contains(STORE)) {
+        upgradeDb.deleteObjectStore(STORE);
+      }
+      upgradeDb.createObjectStore(STORE, { keyPath: 'id' });
+      if (!upgradeDb.objectStoreNames.contains(ACT_STORE)) {
+        upgradeDb.createObjectStore(ACT_STORE, { autoIncrement: true });
+      }
+    };
+    req.onsuccess = e => {
+      DB = e.target.result;
+      dbReady = true;
+      dbReadyCallbacks.forEach(cb => cb());
+      dbReadyCallbacks = [];
+      resolve();
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function waitForDB() {
+  if (dbReady && DB) return Promise.resolve();
+  return new Promise(resolve => dbReadyCallbacks.push(resolve));
+}
+
+function dbGetAll() {
+  return new Promise((resolve, reject) => {
+    const tx = DB.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbPut(obj) {
+  return new Promise((resolve, reject) => {
+    if (!DB) { reject(new Error('DB not initialized')); return; }
+    const rollStr = String(obj.roll).trim();
+    const clsStr  = String(obj.class || '').trim();
+    const divStr  = String(obj.division || '').trim();
+    const normalised = {
+      id: makeStudentId(rollStr, clsStr, divStr),
+      roll: rollStr,
+      name: String(obj.name || '').trim(),
+      class: clsStr,
+      division: divStr,
+      photo: obj.photo || null,
+      addedAt: obj.addedAt || Date.now()
+    };
+    let tx;
+    try { tx = DB.transaction(STORE, 'readwrite'); } catch(e) { reject(e); return; }
+    const store = tx.objectStore(STORE);
+    const req = store.put(normalised);
+    req.onerror = () => reject(req.error);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error || new Error('Transaction aborted'));
+  });
+}
+
+function dbDelete(roll, cls, division) {
+  return new Promise((resolve, reject) => {
+    const id = makeStudentId(roll, cls, division);
+    const tx = DB.transaction(STORE, 'readwrite');
+    const req = tx.objectStore(STORE).delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbClear() {
+  return new Promise((resolve, reject) => {
+    const tx = DB.transaction(STORE, 'readwrite');
+    const req = tx.objectStore(STORE).clear();
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   ACTIVITY LOG (localStorage for speed)
+═══════════════════════════════════════════════ */
+function logActivity(msg, type = 'blue') {
+  const entry = { msg, type, time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) };
+  activity.unshift(entry);
+  if (activity.length > 8) activity.pop();
+  localStorage.setItem('edutrack_activity', JSON.stringify(activity));
+  renderActivity();
+}
+
+function loadActivity() {
+  const stored = localStorage.getItem('edutrack_activity');
+  activity = stored ? JSON.parse(stored) : [];
+}
+
+function renderActivity() {
+  const el = document.getElementById('activityList');
+  if (!activity.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0">No activity yet</div>';
+    return;
+  }
+  el.innerHTML = activity.map(a => `
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--${a.type === 'rose' ? 'rose' : a.type === 'emerald' ? 'emerald' : a.type === 'gold' ? 'gold' : 'accent'})"></div>
+      <div class="activity-text">${a.msg}</div>
+      <div class="activity-time">${a.time}</div>
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   ATTENDANCE (localStorage)
+═══════════════════════════════════════════════ */
+function getTodayKey() {
+  return 'att_' + new Date().toISOString().slice(0, 10);
+}
+
+function getAttendance() {
+  const stored = localStorage.getItem(getTodayKey());
+  return stored ? JSON.parse(stored) : {};
+}
+
+function setAttendance(roll, present) {
+  const att = getAttendance();
+  att[roll] = present;
+  localStorage.setItem(getTodayKey(), JSON.stringify(att));
+}
+
+function getAttendanceStats() {
+  if (!students.length) return { total: 0, present: 0, absent: 0 };
+  const att = getAttendance();
+  const total = students.length;
+  const present = students.filter(s => att[s.roll] === true).length;
+  return { total, present, absent: total - present };
+}
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════ */
+function populateRollDatalist() {
+  const dl = document.getElementById('rollSuggestions');
+  if (!dl) return;
+  dl.innerHTML = students.map(s => `<option value="${s.roll}">${s.roll} — ${s.name}</option>`).join('');
+}
+
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const btn = document.querySelector(`.nav-item[onclick*="${page}"]`);
+  if (btn) btn.classList.add('active');
+
+  const titles = {
+    dashboard: 'Dashboard',
+    students: 'All Students',
+    add: editingRoll ? 'Edit Student' : 'Add Student',
+    attendance: 'Attendance',
+    settings: 'Import / Export',
+  };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
+  closeSidebar();
+
+  if (page === 'students') renderTable();
+  if (page === 'attendance') renderAttendance();
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'add' && !editingRoll) { resetForm(); populateRollDatalist(); setTimeout(() => document.getElementById('fRoll').focus(), 50); }
+}
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR & THEME
+═══════════════════════════════════════════════ */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+function toggleTheme() {
+  const body = document.body;
+  const isLight = body.dataset.theme === 'light';
+  body.dataset.theme = isLight ? '' : 'light';
+  localStorage.setItem('edutrack_theme', body.dataset.theme);
+}
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════ */
+function renderDashboard() {
+  const { total, present, absent } = getAttendanceStats();
+  const rate = total > 0 ? Math.round((present / total) * 100) : 0;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-present').textContent = present;
+  document.getElementById('stat-absent').textContent = absent;
+  document.getElementById('stat-rate').textContent = total > 0 ? rate + '%' : '—';
+
+  document.getElementById('bar-total').style.width = '100%';
+  document.getElementById('bar-present').style.width = total > 0 ? (present / total * 100) + '%' : '0%';
+  document.getElementById('bar-absent').style.width = total > 0 ? (absent / total * 100) + '%' : '0%';
+  document.getElementById('bar-rate').style.width = rate + '%';
+
+  document.getElementById('totalBadge').textContent = total;
+
+  const greet = total === 0
+    ? 'No students yet. Start by adding your first student!'
+    : `You have ${total} student${total !== 1 ? 's' : ''} · ${present} present, ${absent} absent today.`;
+  document.getElementById('dashGreet').textContent = greet;
+
+  renderActivity();
+  renderAttChart();
+  populateClassFilter();
+}
+
+function renderAttChart() {
+  const chart = document.getElementById('attChart');
+  if (!students.length) {
+    chart.innerHTML = '<div style="color:var(--text3);font-size:13px;align-self:center;width:100%;text-align:center">No data yet</div>';
+    return;
+  }
+
+  // Group by class
+  const byClass = {};
+  const att = getAttendance();
+  students.forEach(s => {
+    if (!byClass[s.class]) byClass[s.class] = { total: 0, present: 0 };
+    byClass[s.class].total++;
+    if (att[s.roll]) byClass[s.class].present++;
+  });
+
+  const entries = Object.entries(byClass).slice(0, 8);
+  chart.innerHTML = entries.map(([cls, data]) => {
+    const pct = data.total > 0 ? Math.round(data.present / data.total * 100) : 0;
+    return `
+      <div class="att-bar-wrap">
+        <div class="att-bar-outer">
+          <div class="att-bar-inner" style="height:${pct}%" title="${cls}: ${pct}%"></div>
+        </div>
+        <div class="att-bar-label">${cls}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   STUDENT TABLE
+═══════════════════════════════════════════════ */
+function populateClassFilter() {
+  // Class filter is now static — options defined in HTML
+}
+
+function getFilteredStudents() {
+  let data = [...students];
+  const cls = document.getElementById('filterClass')?.value || '';
+  const div = document.getElementById('filterDiv')?.value || '';
+  const sort = document.getElementById('sortBy')?.value || sortField;
+
+  if (cls) data = data.filter(s => s.class === cls);
+  if (div) data = data.filter(s => s.division === div);
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    data = data.filter(s =>
+      s.name.toLowerCase().includes(q) ||
+      s.roll.toLowerCase().includes(q) ||
+      s.class.toLowerCase().includes(q)
+    );
+  }
+
+  data.sort((a, b) => {
+    let va = a[sort === 'roll' ? 'roll' : sort === 'class' ? 'class' : 'name'];
+    let vb = b[sort === 'roll' ? 'roll' : sort === 'class' ? 'class' : 'name'];
+    return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+
+  return data;
+}
+
+function setSort(field) {
+  if (sortField === field) sortAsc = !sortAsc;
+  else { sortField = field; sortAsc = true; }
+  document.getElementById('sortBy').value = field;
+  renderTable();
+}
+
+function renderTable() {
+  populateClassFilter();
+  const data = getFilteredStudents();
+  const att = getAttendance();
+  const tbody = document.getElementById('studentTbody');
+
+  if (!data.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="6">
+        <div class="empty-state">
+          <div class="empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="empty-title">${students.length === 0 ? 'No students yet' : 'No results found'}</div>
+          <div class="empty-sub">${students.length === 0 ? 'Add your first student to get started.' : 'Try adjusting your search or filters.'}</div>
+          ${students.length === 0 ? '<button class="btn btn-primary" onclick="navigate(\'add\')">Add First Student</button>' : ''}
+        </div>
+      </td></tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = data.map((s, i) => {
+    const ci = Math.abs(s.name.charCodeAt(0)) % AVATAR_COLORS.length;
+    const [bg, fg] = AVATAR_COLORS[ci];
+    const initials = s.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    const isPresent = att[s.roll] === true;
+    const divBadge = ['A','B','C'].indexOf(s.division);
+    const badgeCls = ['badge-blue','badge-violet','badge-emerald'][divBadge] || 'badge-blue';
+    const photo = s.photo
+      ? `<img src="${s.photo}" class="student-photo" alt="${s.name}">`
+      : `<div class="avatar-initials" style="background:${bg};color:${fg}">${initials}</div>`;
+
+    return `
+      <tr id="row-${s.id.replace(/[^a-zA-Z0-9_-]/g, '_')}">
+        <td><span style="font-family:var(--font-display);font-weight:700;color:var(--text3)">${s.roll}</span></td>
+        <td>
+          <div class="student-info">
+            ${photo}
+            <div>
+              <div class="student-name">${s.name}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="badge badge-blue">${s.class}</span></td>
+        <td><span class="badge ${badgeCls}">Div ${s.division}</span></td>
+        <td>
+          <div class="att-toggle">
+            <button class="att-switch ${isPresent ? 'present' : ''}" onclick="toggleAtt('${s.roll}', this)" title="Toggle attendance"></button>
+            <span class="att-label" id="attlbl-${s.roll}">${isPresent ? 'Present' : 'Absent'}</span>
+          </div>
+        </td>
+        <td>
+          <div class="row-actions">
+            <button class="action-btn edit" onclick="editStudent('${s.roll}','${s.class}','${s.division}')" title="Edit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="action-btn del" onclick="deleteStudent('${s.roll}','${s.class}','${s.division}')" title="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   ATTENDANCE TABLE TOGGLE
+═══════════════════════════════════════════════ */
+function toggleAtt(roll, btn) {
+  const isPresent = btn.classList.toggle('present');
+  setAttendance(roll, isPresent);
+  const lbl = document.getElementById('attlbl-' + roll);
+  if (lbl) lbl.textContent = isPresent ? 'Present' : 'Absent';
+  // Update att cards if visible
+  const card = document.querySelector(`.att-student-card[data-roll="${roll}"]`);
+  if (card) {
+    card.classList.toggle('present', isPresent);
+    card.classList.toggle('absent', !isPresent);
+    const sw = card.querySelector('.att-switch');
+    if (sw) sw.classList.toggle('present', isPresent);
+    const lbl2 = card.querySelector('.att-label');
+    if (lbl2) lbl2.textContent = isPresent ? 'Present' : 'Absent';
+  }
+  renderDashboardStats();
+}
+
+function renderDashboardStats() {
+  const { total, present, absent } = getAttendanceStats();
+  const rate = total > 0 ? Math.round((present / total) * 100) : 0;
+  const elTotal    = document.getElementById('stat-total');
+  const elPresent  = document.getElementById('stat-present');
+  const elAbsent   = document.getElementById('stat-absent');
+  const elRate     = document.getElementById('stat-rate');
+  const elBarPres  = document.getElementById('bar-present');
+  const elBarAbs   = document.getElementById('bar-absent');
+  const elBarRate  = document.getElementById('bar-rate');
+  const elBadge    = document.getElementById('totalBadge');
+  if (elTotal)   elTotal.textContent   = total;
+  if (elPresent) elPresent.textContent = present;
+  if (elAbsent)  elAbsent.textContent  = absent;
+  if (elRate)    elRate.textContent    = total > 0 ? rate + '%' : '—';
+  if (elBarPres) elBarPres.style.width = total > 0 ? (present / total * 100) + '%' : '0%';
+  if (elBarAbs)  elBarAbs.style.width  = total > 0 ? (absent / total * 100) + '%' : '0%';
+  if (elBarRate) elBarRate.style.width = rate + '%';
+  if (elBadge)   elBadge.textContent   = total;
+}
+
+/* ═══════════════════════════════════════════════
+   ATTENDANCE PAGE
+═══════════════════════════════════════════════ */
+function renderAttendance() {
+  document.getElementById('attDate').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const grid = document.getElementById('attGrid');
+  const empty = document.getElementById('attEmpty');
+  const att = getAttendance();
+
+  if (!students.length) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  grid.style.display = 'grid';
+  empty.style.display = 'none';
+
+  grid.innerHTML = students.map(s => {
+    const isPresent = att[s.roll] === true;
+    const ci = Math.abs(s.name.charCodeAt(0)) % AVATAR_COLORS.length;
+    const [bg, fg] = AVATAR_COLORS[ci];
+    const initials = s.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    const photo = s.photo
+      ? `<img src="${s.photo}" class="student-photo" alt="${s.name}">`
+      : `<div class="avatar-initials" style="background:${bg};color:${fg}">${initials}</div>`;
+
+    return `
+      <div class="att-student-card ${isPresent ? 'present' : 'absent'}" data-roll="${s.roll}" onclick="toggleAttCard('${s.roll}', this)">
+        ${photo}
+        <div class="att-info">
+          <div class="att-name">${s.name}</div>
+          <div class="att-meta">${s.roll} · ${s.class}-${s.division}</div>
+        </div>
+        <div>
+          <button class="att-switch ${isPresent ? 'present' : ''}" style="pointer-events:none"></button>
+          <div class="att-label" style="font-size:10px;text-align:center;margin-top:4px;color:var(--text3)">${isPresent ? 'Present' : 'Absent'}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleAttCard(roll, card) {
+  const sw = card.querySelector('.att-switch');
+  const isNowPresent = !sw.classList.contains('present');
+  sw.classList.toggle('present', isNowPresent);
+  card.classList.toggle('present', isNowPresent);
+  card.classList.toggle('absent', !isNowPresent);
+  const lbl = card.querySelector('.att-label');
+  if (lbl) lbl.textContent = isNowPresent ? 'Present' : 'Absent';
+  setAttendance(roll, isNowPresent);
+
+  // Sync table row
+  const tableSwitch = document.querySelector(`#row-${CSS.escape(roll)} .att-switch`);
+  if (tableSwitch) tableSwitch.classList.toggle('present', isNowPresent);
+  const tableLbl = document.getElementById('attlbl-' + roll);
+  if (tableLbl) tableLbl.textContent = isNowPresent ? 'Present' : 'Absent';
+  renderDashboardStats();
+}
+
+function markAll(present) {
+  students.forEach(s => setAttendance(s.roll, present));
+  renderAttendance();
+  renderDashboard();
+  toast(present ? 'All students marked present' : 'All students marked absent', present ? 'success' : 'info');
+}
+
+/* ═══════════════════════════════════════════════
+   FORM / SAVE
+═══════════════════════════════════════════════ */
+function resetForm() {
+  editingRoll = null;
+  currentPhotoB64 = null;
+  document.getElementById('formTitle').textContent = 'Add New Student';
+  document.getElementById('saveBtn').innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Save Student
+  `;
+  ['fRoll','fName'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('error');
+  });
+  document.getElementById('fClass').value = '';
+  document.getElementById('fClass').classList.remove('error');
+  document.getElementById('fDiv').value = '';
+  ['eRoll','eName','eClass','eDiv'].forEach(id => document.getElementById(id).classList.remove('show'));
+  clearPhoto();
+  document.getElementById('fRoll').removeAttribute('readonly');
+}
+
+function editStudent(roll, cls, division) {
+  const s = students.find(st => st.id === makeStudentId(roll, cls, division));
+  if (!s) return;
+  editingRoll = roll;
+  navigate('add');
+  document.getElementById('formTitle').textContent = 'Edit Student';
+  document.getElementById('saveBtn').innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Update Student
+  `;
+  document.getElementById('fRoll').value = s.roll;
+  document.getElementById('fRoll').setAttribute('readonly', 'true');
+  document.getElementById('fName').value = s.name;
+  document.getElementById('fClass').value = s.class;
+  document.getElementById('fDiv').value = s.division;
+  if (s.photo) {
+    currentPhotoB64 = s.photo;
+    document.getElementById('photoPreview').src = s.photo;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('photoPlaceholder').style.display = 'none';
+    document.getElementById('clearPhotoBtn').style.display = 'flex';
+  } else clearPhoto();
+}
+
+async function saveStudent() {
+  await waitForDB();
+  const btn = document.getElementById('saveBtn');
+  let valid = true;
+
+  const roll = document.getElementById('fRoll').value.trim();
+  const name = document.getElementById('fName').value.trim();
+  const cls  = document.getElementById('fClass').value.trim();
+  const div  = document.getElementById('fDiv').value.trim();
+
+  // Validate
+  const setErr = (id, errId, cond) => {
+    const el  = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (cond) { el.classList.add('error'); err.classList.add('show'); valid = false; }
+    else      { el.classList.remove('error'); err.classList.remove('show'); }
+  };
+
+  setErr('fRoll', 'eRoll', !roll || (!editingRoll && students.some(s => String(s.roll).trim().toLowerCase() === roll.toLowerCase() && String(s.class).trim().toLowerCase() === cls.toLowerCase() && String(s.division).trim().toLowerCase() === div.toLowerCase())));
+  setErr('fName', 'eName', !name);
+  setErr('fClass', 'eClass', !cls);
+  const divEl  = document.getElementById('fDiv');
+  const divErr = document.getElementById('eDiv');
+  if (!div) { divEl.classList.add('error'); divErr.classList.add('show'); valid = false; }
+  else      { divEl.classList.remove('error'); divErr.classList.remove('show'); }
+
+  if (!valid) { toast('Please fix the form errors', 'error'); return; }
+
+  // Snapshot photo now — resetForm clears it
+  const photoSnapshot = currentPhotoB64;
+
+  if (editingRoll) {
+    const wasEditing = editingRoll;
+    const origHTML = btn.innerHTML;
+    showConfirm('Update Student', `Save changes for ${name}?`, 'info', async () => {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Updating...';
+      try {
+        await doSave(roll, name, cls, div, photoSnapshot, wasEditing);
+      } catch(err) {
+        console.error('Update failed:', err);
+        toast('Update failed. Please try again.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = origHTML;
+      }
+    });
+  } else {
+    const origHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Saving...';
+    try {
+      await doSave(roll, name, cls, div, photoSnapshot, null);
+    } catch(err) {
+      console.error('Save failed:', err);
+      toast('Save failed. Please try again.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = origHTML;
+    }
+  }
+}
+
+async function doSave(roll, name, cls, div, photo, wasEditing) {
+  const obj = { roll: String(roll).trim(), name, class: cls, division: div, photo: photo || null, addedAt: Date.now() };
+
+  // Primary: IndexedDB
+  await dbPut(obj);
+  students = await dbGetAll();
+
+  // Verify write succeeded using composite id
+  const compositeId = makeStudentId(obj.roll, obj.class, obj.division);
+  const verification = students.find(s => s.id === compositeId);
+  if (!verification) {
+    console.error('[EduTrack] Write verification FAILED for id:', compositeId);
+    throw new Error('Student was not saved to IndexedDB. Please try again.');
+  }
+  console.log('[EduTrack] Student saved & verified in IndexedDB:', verification);
+
+  // Debug: log all students currently in DB
+  console.log('[EduTrack] All students in DB after save:', students.map(s => ({ id: s.id, roll: s.roll, class: s.class, division: s.division, name: s.name })));
+
+  // Mirror to localStorage so data survives any IDB quirk
+  try {
+    localStorage.setItem('edutrack_students', JSON.stringify(
+      students.map(s => ({ id: s.id, roll: s.roll, name: s.name, class: s.class, division: s.division, addedAt: s.addedAt }))
+    ));
+  } catch(e) { /* quota exceeded — ignore, IDB is source of truth */ }
+
+  const action = wasEditing ? 'Updated' : 'Added';
+  logActivity(`${action} student: ${name}`, wasEditing ? 'gold' : 'emerald');
+  toast(`Student ${wasEditing ? 'updated' : 'added'} successfully!`, 'success');
+
+  resetForm();
+  navigate('students');
+
+  // Highlight new/updated row
+  setTimeout(() => {
+    const rowId = compositeId.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const row = document.getElementById('row-' + rowId);
+    if (row) { row.classList.add('row-new'); setTimeout(() => row.classList.remove('row-new'), 1600); }
+  }, 120);
+}
+
+async function deleteStudent(roll, cls, division) {
+  const s = students.find(st => st.id === makeStudentId(roll, cls, division));
+  if (!s) return;
+  showConfirm('Delete Student', `Permanently delete ${s.name}? This cannot be undone.`, 'danger', async () => {
+    await dbDelete(s.roll, s.class, s.division);
+    students = await dbGetAll();
+    logActivity(`Deleted student: ${s.name}`, 'rose');
+    toast(`${s.name} deleted`, 'error');
+    renderTable();
+    renderDashboard();
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   PHOTO
+═══════════════════════════════════════════════ */
+function clearPhoto() {
+  currentPhotoB64 = null;
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('photoPreview').src = '';
+  document.getElementById('photoPlaceholder').style.display = 'flex';
+  document.getElementById('clearPhotoBtn').style.display = 'none';
+}
+
+function showPhoto(b64) {
+  currentPhotoB64 = b64;
+  document.getElementById('photoPreview').src = b64;
+  document.getElementById('photoPreview').style.display = 'block';
+  document.getElementById('photoPlaceholder').style.display = 'none';
+  document.getElementById('clearPhotoBtn').style.display = 'flex';
+}
+
+function handleUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    // Compress
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const max = 200;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > max) { h *= max / w; w = max; } }
+      else { if (h > max) { w *= max / h; h = max; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      showPhoto(canvas.toDataURL('image/jpeg', 0.75));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function openCamera() {
+  if (!navigator.mediaDevices?.getUserMedia) {
+    toast('Camera not supported on this browser', 'error');
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+    .then(stream => {
+      cameraStream = stream;
+      const video = document.getElementById('cameraVideo');
+      video.srcObject = stream;
+      document.getElementById('cameraModal').classList.add('open');
+    })
+    .catch(() => toast('Cannot access camera. Check permissions.', 'error'));
+}
+
+function closeCamera() {
+  if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+  document.getElementById('cameraModal').classList.remove('open');
+}
+
+function capturePhoto() {
+  const video = document.getElementById('cameraVideo');
+  const canvas = document.getElementById('captureCanvas');
+  const max = 200;
+  let w = video.videoWidth, h = video.videoHeight;
+  if (w > h) { if (w > max) { h *= max / w; w = max; } }
+  else { if (h > max) { w *= max / h; h = max; } }
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+  const data = canvas.toDataURL('image/jpeg', 0.75);
+  showPhoto(data);
+  closeCamera();
+  toast('Photo captured!', 'success');
+}
+
+/* ═══════════════════════════════════════════════
+   GLOBAL SEARCH
+═══════════════════════════════════════════════ */
+function onGlobalSearch(val) {
+  searchTerm = val.trim();
+  if (document.getElementById('page-students').classList.contains('active')) renderTable();
+}
+
+/* ═══════════════════════════════════════════════
+   EXPORT / IMPORT
+═══════════════════════════════════════════════ */
+function exportCSV() {
+  if (!students.length) { toast('No students to export', 'error'); return; }
+  const header = ['Roll Number', 'Name', 'Class', 'Division'];
+  const rows = students.map(s => [s.roll, s.name, s.class, s.division].map(v => `"${v}"`).join(','));
+  const csv = [header.join(','), ...rows].join('\n');
+  downloadFile('students_export.csv', 'text/csv', csv);
+  toast('CSV exported', 'success');
+  logActivity('Exported CSV', 'blue');
+}
+
+function exportJSON() {
+  if (!students.length) { toast('No students to export', 'error'); return; }
+  downloadFile('students_backup.json', 'application/json', JSON.stringify(students, null, 2));
+  toast('JSON exported', 'success');
+  logActivity('Exported JSON backup', 'blue');
+}
+
+function autoBackup() { exportJSON(); }
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('Invalid format');
+      let added = 0;
+      for (const s of data) {
+        if (s.roll && s.name && s.class) {
+          await dbPut(s);
+          added++;
+        }
+      }
+      students = await dbGetAll();
+      renderDashboard();
+      toast(`Imported ${added} students`, 'success');
+      logActivity(`Imported ${added} students from JSON`, 'emerald');
+    } catch { toast('Invalid JSON file', 'error'); }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function downloadFile(name, type, content) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ═══════════════════════════════════════════════
+   SAMPLE DATA
+═══════════════════════════════════════════════ */
+async function addSampleData() {
+  const samples = [
+    { roll: 'S001', name: 'Arjun Sharma', class: 'FE COMS', division: 'A' },
+    { roll: 'S002', name: 'Priya Patel', class: 'FE IT', division: 'A' },
+    { roll: 'S003', name: 'Rahul Mehta', class: 'SE COMS', division: 'B' },
+    { roll: 'S004', name: 'Anika Singh', class: 'SE IT', division: 'A' },
+    { roll: 'S005', name: 'Dev Kumar', class: 'TE COMS', division: 'B' },
+    { roll: 'S006', name: 'Sneha Joshi', class: 'TE IT', division: 'C' },
+    { roll: 'S007', name: 'Vikram Rao', class: 'BE COMS', division: 'A' },
+    { roll: 'S008', name: 'Meera Iyer', class: 'BE IT', division: 'C' },
+  ];
+  for (const s of samples) {
+    if (!students.some(st => st.roll === s.roll)) await dbPut({ ...s, photo: null, addedAt: Date.now() });
+  }
+  students = await dbGetAll();
+  renderDashboard();
+  toast('Sample data loaded', 'success');
+  logActivity('Loaded sample students', 'emerald');
+}
+
+/* ═══════════════════════════════════════════════
+   CLEAR ALL
+═══════════════════════════════════════════════ */
+function confirmClearAll() {
+  showConfirm('Clear All Data', 'This will permanently delete ALL student records and attendance data. Download a backup first?', 'danger', async () => {
+    await dbClear();
+    students = [];
+    activity = [];
+    localStorage.removeItem('edutrack_activity');
+    renderDashboard();
+    toast('All data cleared', 'info');
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════ */
+function showConfirm(title, body, type = 'danger', cb) {
+  confirmCallback = cb;
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmBody').textContent = body;
+  const icon = document.getElementById('confirmIcon');
+  icon.className = 'modal-icon ' + type;
+  const btn = document.getElementById('confirmOkBtn');
+  btn.className = type === 'danger' ? 'btn btn-danger' : 'btn btn-primary';
+  btn.textContent = 'Confirm';
+  document.getElementById('confirmModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('confirmModal').classList.remove('open');
+  confirmCallback = null;
+}
+
+function confirmOk() {
+  closeModal();
+  if (confirmCallback) { confirmCallback(); confirmCallback = null; }
+}
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const icons = {
+    success: '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    error: '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    info: '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  };
+  const div = document.createElement('div');
+  div.className = `toast ${type}`;
+  div.innerHTML = `${icons[type] || icons.info}<span class="toast-text">${msg}</span><button class="toast-close" onclick="removeToast(this.parentElement)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+  c.appendChild(div);
+  setTimeout(() => removeToast(div), 3500);
+}
+
+function removeToast(el) {
+  if (!el || !el.parentElement) return;
+  el.classList.add('removing');
+  setTimeout(() => el.remove(), 300);
+}
+
+/* ═══════════════════════════════════════════════
+   KEYBOARD
+═══════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeCamera(); }
+});
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+async function init() {
+  // Theme
+  const savedTheme = localStorage.getItem('edutrack_theme');
+  if (savedTheme) document.body.dataset.theme = savedTheme;
+
+  // Hide teacher portal initially until auth completes
+  document.getElementById('sidebar').style.display = 'none';
+  document.getElementById('main').style.display = 'none';
+
+  await initDB();
+  students = await dbGetAll();
+  loadActivity();
+  renderDashboard();
+
+  // Set today's date
+  document.getElementById('attDate').textContent = new Date().toLocaleDateString('en-IN', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  // Check for existing session
+  const session = authGetSession();
+  if (session) {
+    authEnterPortal(session);
+  } else {
+    // Show auth overlay
+    document.getElementById('authOverlay').style.display = '';
+    document.getElementById('sidebar').style.display = 'none';
+    document.getElementById('main').style.display = 'none';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   UI UPGRADE — ANIMATIONS & INTERACTIONS
+═══════════════════════════════════════════════ */
+
+// Animated number counter for stat cards
+function animateNumber(el, target, suffix = '') {
+  const start = parseInt(el.dataset.animVal || '0') || 0;
+  if (start === target && el.textContent !== '—') return;
+  el.dataset.animVal = target;
+  if (target === 0 && suffix === '') { el.textContent = '0'; return; }
+  if (el.textContent === '—' && target === 0) { el.textContent = '—'; return; }
+
+  const duration = 700;
+  const startTime = performance.now();
+  const step = (now) => {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (target - start) * eased);
+    el.textContent = current + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// Patch renderDashboard to use animated numbers
+const _origRenderDashboard = renderDashboard;
+renderDashboard = function() {
+  _origRenderDashboard();
+  // Trigger stagger animation class
+  const dashPage = document.getElementById('page-dashboard');
+  if (dashPage) {
+    dashPage.classList.remove('page-dashboard-ready');
+    requestAnimationFrame(() => dashPage.classList.add('page-dashboard-ready'));
+  }
+
+  const { total, present, absent } = getAttendanceStats();
+  const rate = total > 0 ? Math.round((present / total) * 100) : 0;
+
+  const elTotal   = document.getElementById('stat-total');
+  const elPresent = document.getElementById('stat-present');
+  const elAbsent  = document.getElementById('stat-absent');
+  const elRate    = document.getElementById('stat-rate');
+  if (elTotal)   animateNumber(elTotal,   total);
+  if (elPresent) animateNumber(elPresent, present);
+  if (elAbsent)  animateNumber(elAbsent,  absent);
+  if (elRate && total > 0) animateNumber(elRate, rate, '%');
+};
+
+// Patch renderDashboardStats to animate too
+const _origRenderDashboardStats = renderDashboardStats;
+renderDashboardStats = function() {
+  _origRenderDashboardStats();
+  const { total, present, absent } = getAttendanceStats();
+  const rate = total > 0 ? Math.round((present / total) * 100) : 0;
+  const elTotal   = document.getElementById('stat-total');
+  const elPresent = document.getElementById('stat-present');
+  const elAbsent  = document.getElementById('stat-absent');
+  const elRate    = document.getElementById('stat-rate');
+  if (elTotal)   animateNumber(elTotal,   total);
+  if (elPresent) animateNumber(elPresent, present);
+  if (elAbsent)  animateNumber(elAbsent,  absent);
+  if (elRate && total > 0) animateNumber(elRate, rate, '%');
+};
+
+// Ripple effect on primary buttons
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.btn-primary');
+  if (!btn || btn.disabled) return;
+  const ripple = document.createElement('span');
+  ripple.className = 'btn-ripple';
+  const rect = btn.getBoundingClientRect();
+  ripple.style.left = (e.clientX - rect.left) + 'px';
+  ripple.style.top  = (e.clientY - rect.top) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 700);
+});
+
+// Improved attendance empty state
+const _origRenderAttendance = renderAttendance;
+renderAttendance = function() {
+  _origRenderAttendance();
+  const attEmpty = document.getElementById('attEmpty');
+  if (attEmpty && attEmpty.style.display !== 'none') {
+    attEmpty.style.display = 'flex';
+    attEmpty.innerHTML = `
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+      </div>
+      <div class="empty-title">No students to mark</div>
+      <div class="empty-sub">Add students first, then come back to take attendance.</div>
+      <button class="btn btn-primary" onclick="navigate('add')">Add First Student</button>
+    `;
+  }
+};
+
+// Trigger dashboard stagger on page load too
+const _origNavigate = navigate;
+navigate = function(page) {
+  _origNavigate(page);
+  if (page === 'dashboard') {
+    const dashPage = document.getElementById('page-dashboard');
+    if (dashPage) {
+      dashPage.classList.remove('page-dashboard-ready');
+      requestAnimationFrame(() => dashPage.classList.add('page-dashboard-ready'));
+    }
+  }
+};
+
+
+/* ═══════════════════════════════════════════════
+   AUTHENTICATION SYSTEM
+═══════════════════════════════════════════════ */
+const AUTH_KEY = 'edutrack_users';
+const SESSION_KEY = 'edutrack_session';
+
+let authRole = 'teacher';
+let authMode = 'login'; // 'login' | 'signup'
+
+function authGetUsers() {
+  try { return JSON.parse(localStorage.getItem(AUTH_KEY) || '[]'); } catch { return []; }
+}
+function authSaveUsers(users) {
+  localStorage.setItem(AUTH_KEY, JSON.stringify(users));
+}
+function authGetSession() {
+  try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; }
+}
+function authSaveSession(session) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+}
+function authClearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+function authSetRole(role) {
+  authRole = role;
+  document.getElementById('roleTeacher').classList.toggle('active', role === 'teacher');
+  document.getElementById('roleStudent').classList.toggle('active', role === 'student');
+  const isTeacher = role === 'teacher';
+  document.getElementById('labelIdentifier').textContent = isTeacher ? 'Email Address' : 'Roll Number';
+  document.getElementById('authIdentifier').placeholder = isTeacher ? 'Enter your email' : 'Enter your roll number';
+  // Show/hide class+division fields for student
+  const studentFields = document.getElementById('studentAuthFields');
+  if (studentFields) studentFields.style.display = isTeacher ? 'none' : 'block';
+  authUpdateTitles();
+  authClearErrors();
+}
+
+function authSwitchTab(mode) {
+  authMode = mode;
+  document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+  document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
+  document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+  document.getElementById('authSwitch').innerHTML = mode === 'login'
+    ? `Don&#39;t have an account? <a onclick="authSwitchTab('signup')">Sign Up</a>`
+    : `Already have an account? <a onclick="authSwitchTab('login')">Sign In</a>`;
+  authUpdateTitles();
+  authClearErrors();
+}
+
+function authUpdateTitles() {
+  const isTeacher = authRole === 'teacher';
+  const isLogin = authMode === 'login';
+  const role = isTeacher ? 'Teacher' : 'Student';
+  document.getElementById('authTitle').textContent = `${role} ${isLogin ? 'Sign In' : 'Sign Up'}`;
+  document.getElementById('authSubtitle').textContent = isLogin
+    ? `Access your ${role.toLowerCase()} ${isTeacher ? 'dashboard' : 'profile'}`
+    : `Create your ${role.toLowerCase()} account`;
+}
+
+function authClearErrors() {
+  ['authIdentifier','authPassword','authStudentClass','authStudentDiv'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('err');
+  });
+  ['errIdentifier','errPassword','authGlobalErr','errStudentClass','errStudentDiv'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+}
+
+function authShowGlobalErr(msg) {
+  const el = document.getElementById('authGlobalErr');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+let _dbNotReadyToastShown = false;
+
+async function authSubmit() {
+  authClearErrors();
+  const identifier = document.getElementById('authIdentifier').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const isStudent = authRole === 'student';
+  const studentClass = isStudent ? (document.getElementById('authStudentClass')?.value.trim() || '') : '';
+  const studentDiv   = isStudent ? (document.getElementById('authStudentDiv')?.value.trim() || '') : '';
+  let valid = true;
+
+  if (!identifier) {
+    document.getElementById('authIdentifier').classList.add('err');
+    document.getElementById('errIdentifier').textContent = 'This field is required';
+    document.getElementById('errIdentifier').classList.add('show');
+    valid = false;
+  }
+  if (isStudent && !studentClass) {
+    const el = document.getElementById('authStudentClass');
+    const err = document.getElementById('errStudentClass');
+    if (el) el.classList.add('err');
+    if (err) { err.textContent = 'Please select your class'; err.classList.add('show'); }
+    valid = false;
+  }
+  if (isStudent && !studentDiv) {
+    const el = document.getElementById('authStudentDiv');
+    const err = document.getElementById('errStudentDiv');
+    if (el) el.classList.add('err');
+    if (err) { err.textContent = 'Please select your division'; err.classList.add('show'); }
+    valid = false;
+  }
+  if (password.length < 6) {
+    document.getElementById('authPassword').classList.add('err');
+    document.getElementById('errPassword').textContent = 'Password must be at least 6 characters';
+    document.getElementById('errPassword').classList.add('show');
+    valid = false;
+  }
+  if (!valid) return;
+
+  const btn = document.getElementById('authSubmitBtn');
+  btn.disabled = true;
+
+  try {
+    // Ensure DB is ready before any student operation
+    try {
+      await waitForDB();
+    } catch(e) {
+      if (!_dbNotReadyToastShown) {
+        _dbNotReadyToastShown = true;
+        authShowGlobalErr('Database not ready. Please wait a moment and try again.');
+        setTimeout(() => { _dbNotReadyToastShown = false; }, 4000);
+      }
+      return;
+    }
+
+    const users = authGetUsers();
+
+    if (authMode === 'signup') {
+      // Check duplicate — for students use roll+class+division composite key
+      const existsCheck = isStudent
+        ? users.some(u => u.role === 'student' && u.studentKey === makeStudentId(identifier, studentClass, studentDiv))
+        : users.some(u => u.role === authRole && String(u.identifier).toLowerCase() === String(identifier).toLowerCase());
+      if (existsCheck) { authShowGlobalErr('This account already exists. Please sign in.'); return; }
+
+      if (isStudent) {
+        const freshStudents = await dbGetAll();
+        students = freshStudents;
+        const targetId = makeStudentId(identifier, studentClass, studentDiv);
+        console.log('[EduTrack] Signup check — looking for id:', targetId, '| DB records:', freshStudents.map(s => s.id));
+        const match = freshStudents.find(s => s.id === targetId);
+        if (!match) {
+          authShowGlobalErr('No student record found with this Roll Number + Class + Division. Please ask your teacher to add you first.');
+          return;
+        }
+        const user = {
+          role: 'student',
+          identifier: String(identifier).trim(),
+          studentKey: targetId,
+          studentClass,
+          studentDiv,
+          password,
+          createdAt: Date.now()
+        };
+        users.push(user);
+        authSaveUsers(users);
+        authSaveSession({ role: 'student', identifier: user.identifier, studentKey: targetId });
+        authEnterPortal({ role: 'student', identifier: user.identifier, studentKey: targetId });
+      } else {
+        const user = { role: authRole, identifier: String(identifier).trim(), password, createdAt: Date.now() };
+        users.push(user);
+        authSaveUsers(users);
+        authSaveSession({ role: authRole, identifier: user.identifier });
+        authEnterPortal({ role: authRole, identifier: user.identifier });
+      }
+    } else {
+      // Login
+      students = await dbGetAll();
+      if (isStudent) {
+        const targetKey = makeStudentId(identifier, studentClass, studentDiv);
+        const user = users.find(u => u.role === 'student' && u.studentKey === targetKey && u.password === password);
+        if (!user) { authShowGlobalErr('Invalid credentials. Please check Roll Number, Class, Division and Password.'); return; }
+        authSaveSession({ role: 'student', identifier: user.identifier, studentKey: targetKey });
+        authEnterPortal({ role: 'student', identifier: user.identifier, studentKey: targetKey });
+      } else {
+        const normalId = String(identifier).trim().toLowerCase();
+        const user = users.find(u => u.role === authRole && String(u.identifier).trim().toLowerCase() === normalId && u.password === password);
+        if (!user) { authShowGlobalErr('Invalid credentials. Please check and try again.'); return; }
+        authSaveSession({ role: authRole, identifier: user.identifier });
+        authEnterPortal({ role: authRole, identifier: user.identifier });
+      }
+    }
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function authEnterPortal(session) {
+  if (session.role === 'teacher') {
+    // Show teacher portal (existing system)
+    document.getElementById('authOverlay').classList.add('hidden');
+    setTimeout(() => { document.getElementById('authOverlay').style.display = 'none'; }, 400);
+    document.getElementById('studentPortal').classList.remove('active');
+    document.getElementById('sidebar').style.display = '';
+    document.getElementById('main').style.display = '';
+
+    // Update teacher info bar
+    const initial = session.identifier.charAt(0).toUpperCase();
+    document.getElementById('teacherAvatar').textContent = initial;
+    const email = session.identifier;
+    document.getElementById('teacherName').textContent = email.length > 20 ? email.substring(0, 18) + '...' : email;
+  } else {
+    // Show student portal — ensure students array is fresh from IDB
+    document.getElementById('authOverlay').classList.add('hidden');
+    setTimeout(() => { document.getElementById('authOverlay').style.display = 'none'; }, 400);
+    document.getElementById('sidebar').style.display = 'none';
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('studentPortal').classList.add('active');
+    waitForDB().then(() => dbGetAll()).then(fresh => {
+      students = fresh;
+      renderStudentPortal(session.studentKey || session.identifier);
+    }).catch(() => renderStudentPortal(session.studentKey || session.identifier));
+  }
+}
+
+function spGetGreeting() {
+  const h = new Date().getHours();
+  if (h >= 5  && h < 12) return { text: 'Good Morning',   emoji: '☀️',  sub: 'Ready to learn something new today?' };
+  if (h >= 12 && h < 14) return { text: 'Good Afternoon', emoji: '🌤️', sub: 'Hope your classes are going well!' };
+  if (h >= 14 && h < 17) return { text: 'Good Afternoon', emoji: '📚', sub: 'Keep up the great work!' };
+  if (h >= 17 && h < 20) return { text: 'Good Evening',   emoji: '🌆', sub: 'Time to review today\'s notes!' };
+  if (h >= 20 && h < 23) return { text: 'Good Evening',   emoji: '🌙', sub: 'Hope you had a productive day!' };
+  return { text: 'Good Night', emoji: '🌟', sub: 'Rest well — great day tomorrow!' };
+}
+
+function spRenderGreeting(name) {
+  const g = spGetGreeting();
+  const firstName = name ? name.split(' ')[0] : '';
+  const chipEmoji = document.getElementById('spGreetingEmoji');
+  const chipTime  = document.getElementById('spGreetingTime');
+  const fullEl    = document.getElementById('spGreetingFull');
+  const subEl     = document.getElementById('spGreetingName');
+  const bigEmoji  = document.getElementById('spGreetingBigEmoji');
+  if (chipEmoji) chipEmoji.textContent = g.emoji;
+  if (chipTime)  chipTime.textContent  = g.text;
+  if (fullEl)    fullEl.textContent    = g.text + (firstName ? ', ' + firstName + '!' : '!');
+  if (subEl)     subEl.textContent     = firstName ? g.sub : 'Welcome back to EduTrack';
+  if (bigEmoji)  bigEmoji.textContent  = g.emoji;
+}
+
+function spGetAttendanceHistory(roll) {
+  // Collect all daily attendance keys from localStorage
+  const history = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('att_')) continue;
+    try {
+      const dateStr = key.replace('att_', ''); // YYYY-MM-DD
+      const data = JSON.parse(localStorage.getItem(key) || '{}');
+      if (roll in data) {
+        history.push({ date: dateStr, present: data[roll] === true });
+      }
+    } catch { /* skip */ }
+  }
+  // Sort newest first
+  history.sort((a, b) => b.date.localeCompare(a.date));
+  return history;
+}
+
+function spRenderAttendance(roll) {
+  const history = spGetAttendanceHistory(roll);
+  const totalDays   = history.length;
+  const presentDays = history.filter(h => h.present).length;
+  const absentDays  = totalDays - presentDays;
+  const pct         = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
+
+  // Colour class
+  const colorClass = pct >= 75 ? '' : pct >= 50 ? 'warn' : 'danger';
+
+  // Percentage text — animate counter
+  const pctEl = document.getElementById('spAttPct');
+  if (pctEl) {
+    if (totalDays > 0) {
+      let cur = 0;
+      const step = () => {
+        cur = Math.min(cur + Math.ceil(pct / 30), pct);
+        pctEl.textContent = cur + '%';
+        if (cur < pct) requestAnimationFrame(step);
+      };
+      setTimeout(() => requestAnimationFrame(step), 200);
+    } else {
+      pctEl.textContent = '—';
+    }
+  }
+
+  // Circular SVG — r=45, circumference=2π×45≈282.74
+  const circle = document.getElementById('spCircleFill');
+  if (circle) {
+    const circumference = 2 * Math.PI * 45; // r=45 → 282.74
+    const offset = totalDays > 0 ? circumference * (1 - pct / 100) : circumference;
+    circle.className = 'sp-circle-fill' + (colorClass ? ' ' + colorClass : '');
+    requestAnimationFrame(() => {
+      setTimeout(() => { circle.style.strokeDashoffset = offset; circle.style.strokeDasharray = circumference; }, 80);
+    });
+  }
+
+  // Stat values — animate
+  function animateStat(id, target) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (totalDays === 0) { el.textContent = '—'; return; }
+    let cur = 0;
+    const step = () => {
+      cur = Math.min(cur + 1, target);
+      el.textContent = cur;
+      if (cur < target) requestAnimationFrame(step);
+    };
+    setTimeout(() => requestAnimationFrame(step), 300);
+  }
+  animateStat('spAttPresent', presentDays);
+  animateStat('spAttAbsent', absentDays);
+  animateStat('spAttTotal', totalDays);
+
+  // Progress bar
+  const barFill = document.getElementById('spAttBarFill');
+  const barLbl  = document.getElementById('spAttBarLbl');
+  if (barFill) {
+    barFill.className = 'sp-att-bar-fill' + (colorClass ? ' ' + colorClass : '');
+    requestAnimationFrame(() => {
+      setTimeout(() => { barFill.style.width = totalDays > 0 ? pct + '%' : '0%'; }, 80);
+    });
+  }
+  if (barLbl) barLbl.textContent = totalDays > 0 ? pct + '%' : 'No data yet';
+
+  // Status message
+  const statusMsg = document.getElementById('spAttStatusMsg');
+  if (statusMsg) {
+    if (totalDays === 0) {
+      statusMsg.style.display = 'none';
+    } else {
+      statusMsg.style.display = 'flex';
+      let cls, icon, txt;
+      if (pct >= 75) {
+        cls = 'good'; icon = '✓';
+        txt = `Great! Your attendance is on track at ${pct}%. Keep it up!`;
+      } else if (pct >= 50) {
+        cls = 'warn'; icon = '⚠';
+        txt = `Your attendance is ${pct}%. You need ≥75% to stay eligible. Please attend regularly.`;
+      } else {
+        cls = 'danger'; icon = '✕';
+        txt = `Critical: Only ${pct}% attendance. Immediate improvement is required to avoid academic impact.`;
+      }
+      statusMsg.className = `sp-att-status-msg ${cls}`;
+      statusMsg.innerHTML = `<span>${icon}</span> ${txt}`;
+    }
+  }
+
+  // History list
+  const listEl = document.getElementById('spHistoryList');
+  if (listEl) {
+    if (!history.length) {
+      listEl.innerHTML = '<div class="sp-history-empty">No attendance records yet.</div>';
+    } else {
+      const recent = history.slice(0, 10);
+      listEl.innerHTML = recent.map((h, i) => {
+        const d = new Date(h.date + 'T00:00:00');
+        const label = d.toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+        const cls = h.present ? 'present' : 'absent';
+        const txt = h.present ? 'Present' : 'Absent';
+        return `
+          <div class="sp-history-item" style="animation:spSlideDown 0.3s ease ${i * 0.04}s both">
+            <div class="sp-history-dot ${cls}"></div>
+            <span class="sp-history-date">${label}</span>
+            <span class="sp-history-status ${cls}">${txt}</span>
+          </div>`;
+      }).join('');
+    }
+  }
+}
+
+function renderStudentPortal(studentKey) {
+  // Try composite key first; fall back to roll-only match for legacy sessions
+  let student = students.find(s => s.id === studentKey);
+  if (!student) {
+    const normalRoll = String(studentKey).trim().toLowerCase();
+    student = students.find(s => String(s.roll).trim().toLowerCase() === normalRoll);
+  }
+
+  // Greeting (works even without student record)
+  spRenderGreeting(student ? student.name : '');
+
+  if (!student) {
+    document.getElementById('spName').textContent = 'Student Not Found';
+    document.getElementById('spRollBadge').textContent = studentKey;
+    document.getElementById('spRoll').textContent = studentKey;
+    document.getElementById('spClass').textContent = '—';
+    document.getElementById('spDiv').textContent = '—';
+    document.getElementById('spDate').textContent = '—';
+    document.getElementById('spAvatarWrap').innerHTML = '<div class="sp-avatar-placeholder" style="background:rgba(59,130,246,0.15);color:var(--accent2)">?</div>';
+    return;
+  }
+
+  document.getElementById('spName').textContent = student.name;
+  document.getElementById('spRollBadge').textContent = student.roll;
+  document.getElementById('spRoll').textContent = student.roll;
+  document.getElementById('spClass').textContent = student.class || '—';
+  document.getElementById('spDiv').textContent = student.division || '—';
+
+  const dateStr = student.addedAt ? new Date(student.addedAt).toLocaleDateString('en-IN', {year:'numeric',month:'short',day:'numeric'}) : '—';
+  document.getElementById('spDate').textContent = dateStr;
+  document.getElementById('spJoined').textContent = student.addedAt ? 'Since ' + dateStr : '';
+
+  // Avatar
+  const avatarWrap = document.getElementById('spAvatarWrap');
+  if (student.photo) {
+    avatarWrap.innerHTML = `<img class="sp-avatar" src="${student.photo}" alt="${student.name}">`;
+  } else {
+    const COLORS = [
+      ['rgba(59,130,246,0.18)','#60a5fa'],
+      ['rgba(139,92,246,0.18)','#a78bfa'],
+      ['rgba(16,185,129,0.18)','#34d399'],
+      ['rgba(244,63,94,0.18)','#fb7185'],
+      ['rgba(245,158,11,0.18)','#fbbf24'],
+    ];
+    const idx = student.name.charCodeAt(0) % COLORS.length;
+    const [bg, color] = COLORS[idx];
+    const initials = student.name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    avatarWrap.innerHTML = `<div class="sp-avatar-placeholder" style="background:${bg};color:${color}">${initials}</div>`;
+  }
+
+  // Attendance section
+  spRenderAttendance(student.roll);
+}
+
+function spConfirmLogout() {
+  const modal = document.getElementById('spLogoutModal');
+  if (modal) modal.classList.add('open');
+}
+
+function spCloseLogoutModal() {
+  const modal = document.getElementById('spLogoutModal');
+  if (modal) modal.classList.remove('open');
+}
+
+function spDoLogout() {
+  spCloseLogoutModal();
+  authLogout();
+}
+
+function authLogout() {
+  authClearSession();
+  // Reset auth form
+  const idEl = document.getElementById('authIdentifier');
+  const pwEl = document.getElementById('authPassword');
+  if (idEl) idEl.value = '';
+  if (pwEl) pwEl.value = '';
+  authClearErrors();
+  authSwitchTab('login');
+  authSetRole('teacher');
+  // Show auth overlay
+  document.getElementById('authOverlay').style.display = '';
+  document.getElementById('authOverlay').classList.remove('hidden');
+  document.getElementById('studentPortal').classList.remove('active');
+  document.getElementById('sidebar').style.display = '';
+  document.getElementById('main').style.display = '';
+}
+
+// Keyboard submit + init — deferred until full DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+  const authPasswordEl   = document.getElementById('authPassword');
+  const authIdentifierEl = document.getElementById('authIdentifier');
+  const authStudentClass = document.getElementById('authStudentClass');
+  const authStudentDiv   = document.getElementById('authStudentDiv');
+  const globalSearchEl   = document.getElementById('globalSearch');
+  const photoInputEl     = document.getElementById('photoInput');
+
+  // Auth form — Enter key triggers submit on all relevant fields
+  [authPasswordEl, authIdentifierEl].forEach(el => {
+    if (el) el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); authSubmit(); }
+    });
+  });
+  // Select fields: Tab away naturally, Enter submits
+  [authStudentClass, authStudentDiv].forEach(el => {
+    if (el) el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); authSubmit(); }
+    });
+  });
+
+  if (globalSearchEl) {
+    globalSearchEl.addEventListener('input', function () {
+      onGlobalSearch(this.value);
+    });
+  }
+  if (photoInputEl) {
+    photoInputEl.addEventListener('change', function () {
+      handleUpload(this);
+    });
+  }
+
+  // Escape closes student logout modal
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      spCloseLogoutModal();
+    }
+  });
+
+  // Add student form — Enter key submits (non-select/textarea/button elements)
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const page = document.getElementById('page-add');
+      if (page && page.classList.contains('active')) {
+        const tag = document.activeElement.tagName;
+        if (tag !== 'BUTTON' && tag !== 'SELECT' && tag !== 'TEXTAREA') {
+          e.preventDefault();
+          saveStudent();
+        }
+      }
+    }
+  });
+
+  init().catch(console.error);
+});
+</script>
+
+<!-- ══════ AUTH OVERLAY ══════ -->
+<div id="authOverlay">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 11-6-11-6zM1 17l11 6 11-6M1 13l11 6 11-6"/></svg>
+      </div>
+      <span class="auth-logo-text">Edu<span>Track</span></span>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="authSwitchTab('login')">Sign In</button>
+      <button class="auth-tab" id="tabSignup" onclick="authSwitchTab('signup')">Sign Up</button>
+    </div>
+
+    <div class="auth-role-toggle">
+      <button class="auth-role-btn active" id="roleTeacher" onclick="authSetRole('teacher')">
+        <span class="role-icon">👨‍🏫</span>
+        <span>Teacher</span>
+      </button>
+      <button class="auth-role-btn" id="roleStudent" onclick="authSetRole('student')">
+        <span class="role-icon">👨‍🎓</span>
+        <span>Student</span>
+      </button>
+    </div>
+
+    <div id="authTitle" class="auth-title">Teacher Sign In</div>
+    <div id="authSubtitle" class="auth-subtitle">Access your teacher dashboard</div>
+
+    <div class="auth-global-err" id="authGlobalErr"></div>
+
+    <div class="auth-field" id="fieldIdentifier">
+      <label id="labelIdentifier">Email Address</label>
+      <input type="text" id="authIdentifier" placeholder="Enter your email" autocomplete="off">
+      <div class="auth-err-msg" id="errIdentifier">This field is required</div>
+    </div>
+
+    <!-- Student-only fields: Class + Division -->
+    <div id="studentAuthFields" style="display:none">
+      <div class="auth-field">
+        <label>Class</label>
+        <select id="authStudentClass">
+          <option value="">Select your class</option>
+          <option value="FE COMS">FE COMS</option>
+          <option value="FE IT">FE IT</option>
+          <option value="SE COMS">SE COMS</option>
+          <option value="SE IT">SE IT</option>
+          <option value="TE COMS">TE COMS</option>
+          <option value="TE IT">TE IT</option>
+          <option value="BE COMS">BE COMS</option>
+          <option value="BE IT">BE IT</option>
+        </select>
+        <div class="auth-err-msg" id="errStudentClass">Please select your class</div>
+      </div>
+      <div class="auth-field">
+        <label>Division</label>
+        <select id="authStudentDiv">
+          <option value="">Select your division</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+        <div class="auth-err-msg" id="errStudentDiv">Please select your division</div>
+      </div>
+    </div>
+
+    <div class="auth-field">
+      <label>Password</label>
+      <input type="password" id="authPassword" placeholder="Enter your password" autocomplete="off">
+      <div class="auth-err-msg" id="errPassword">Password must be at least 6 characters</div>
+    </div>
+
+    <button class="auth-submit" id="authSubmitBtn" onclick="authSubmit()">Sign In</button>
+
+    <div class="auth-switch" id="authSwitch">
+      Don't have an account? <a onclick="authSwitchTab('signup')">Sign Up</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ STUDENT PORTAL ══════ -->
+<div id="studentPortal">
+  <header class="sp-topbar">
+    <div class="sp-topbar-left">
+      <div class="sp-logo">
+        <div class="sp-logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 11-6-11-6zM1 17l11 6 11-6M1 13l11 6 11-6"/></svg>
+        </div>
+        <span class="sp-logo-text">Edu<span>Track</span></span>
+      </div>
+      <span class="sp-portal-badge">Student Portal</span>
+    </div>
+    <div class="sp-topbar-right">
+      <div class="sp-greeting-chip" id="spGreetingChip">
+        <span id="spGreetingEmoji">👋</span>
+        <span id="spGreetingTime">Hello</span>
+      </div>
+      <button class="sp-logout-btn" onclick="spConfirmLogout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </button>
+    </div>
+  </header>
+  <div class="sp-body">
+    <div class="sp-layout">
+
+      <!-- Greeting Banner -->
+      <div class="sp-greeting-banner" id="spGreetingBanner">
+        <div>
+          <div class="sp-greeting-text" id="spGreetingFull">Good Morning!</div>
+          <div class="sp-greeting-sub" id="spGreetingName">Welcome back to EduTrack</div>
+        </div>
+        <span class="sp-greeting-emoji" id="spGreetingBigEmoji">☀️</span>
+      </div>
+
+      <!-- Profile Card -->
+      <div class="sp-card" id="spCard">
+        <div class="sp-card-header">
+          <div id="spAvatarWrap"></div>
+          <div>
+            <div class="sp-name" id="spName">—</div>
+            <div class="sp-roll-badge" id="spRollBadge">—</div>
+          </div>
+        </div>
+        <div class="sp-card-body">
+          <div class="sp-info-block">
+            <div class="sp-info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Roll Number
+            </div>
+            <div class="sp-info-value" id="spRoll">—</div>
+          </div>
+          <div class="sp-info-block">
+            <div class="sp-info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              Class
+            </div>
+            <div class="sp-info-value" id="spClass">—</div>
+          </div>
+          <div class="sp-info-block">
+            <div class="sp-info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Division
+            </div>
+            <div class="sp-info-value" id="spDiv">—</div>
+          </div>
+          <div class="sp-info-block">
+            <div class="sp-info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Enrolled
+            </div>
+            <div class="sp-info-value" id="spDate">—</div>
+          </div>
+        </div>
+        <div class="sp-card-footer">
+          <div class="sp-status-dot">Profile Active</div>
+          <div class="sp-joined" id="spJoined"></div>
+        </div>
+      </div>
+
+      <!-- Attendance Card -->
+      <div class="sp-attendance-card">
+        <div class="sp-section-title">Attendance Overview</div>
+        <div class="sp-att-body">
+          <!-- Circular indicator -->
+          <div class="sp-circle-wrap">
+            <svg class="sp-circle-svg" width="112" height="112" viewBox="0 0 112 112">
+              <circle class="sp-circle-bg"   cx="56" cy="56" r="45"/>
+              <circle class="sp-circle-fill" cx="56" cy="56" r="45" id="spCircleFill"/>
+            </svg>
+            <div class="sp-circle-center">
+              <div class="sp-circle-pct" id="spAttPct">—</div>
+              <div class="sp-circle-lbl">Attend.</div>
+            </div>
+          </div>
+          <!-- Stats -->
+          <div class="sp-att-stats">
+            <div class="sp-att-stat">
+              <div class="sp-att-stat-icon present">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <span class="sp-att-stat-label">Present Days</span>
+              <span class="sp-att-stat-val" id="spAttPresent">—</span>
+            </div>
+            <div class="sp-att-stat">
+              <div class="sp-att-stat-icon absent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              </div>
+              <span class="sp-att-stat-label">Absent Days</span>
+              <span class="sp-att-stat-val" id="spAttAbsent">—</span>
+            </div>
+            <div class="sp-att-stat">
+              <div class="sp-att-stat-icon total">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <span class="sp-att-stat-label">Days Recorded</span>
+              <span class="sp-att-stat-val" id="spAttTotal">—</span>
+            </div>
+          </div>
+        </div>
+        <!-- Progress bar -->
+        <div class="sp-att-bar-row">
+          <div class="sp-att-bar-label-row">
+            <span>Attendance Rate</span>
+            <span id="spAttBarLbl">—</span>
+          </div>
+          <div class="sp-att-bar-track">
+            <div class="sp-att-bar-fill" id="spAttBarFill"></div>
+          </div>
+        </div>
+        <!-- Status message -->
+        <div id="spAttStatusMsg" class="sp-att-status-msg none" style="display:none"></div>
+      </div>
+
+      <!-- History Card -->
+      <div class="sp-history-card">
+        <div class="sp-section-title">Recent Attendance History</div>
+        <div class="sp-history-list" id="spHistoryList">
+          <div class="sp-history-empty">No attendance records yet.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════ STUDENT LOGOUT CONFIRM MODAL ══════ -->
+<div class="sp-modal-overlay" id="spLogoutModal">
+  <div class="sp-modal">
+    <div class="sp-modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </div>
+    <div class="sp-modal-title">Sign Out?</div>
+    <div class="sp-modal-body">You will be signed out of your student account. Your data is saved and will be here when you return.</div>
+    <div class="sp-modal-actions">
+      <button class="sp-modal-cancel" onclick="spCloseLogoutModal()">Cancel</button>
+      <button class="sp-modal-confirm" onclick="spDoLogout()">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
