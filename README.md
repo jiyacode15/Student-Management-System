@@ -1,4 +1,6 @@
 # EduTrack – Student Management System
+## Deployment
+🚀 Live Project: [EduTrack Student Management System](https://edutrackproject.netlify.app/)
 
 ## Overview
 EduTrack is a web-based Student Management System developed to simplify academic administration through digital management of student records, attendance tracking, faculty information, and dashboard-based analytics.
